@@ -10,6 +10,8 @@ import BookingModal from '@/components/features/BookingModal';
 import { Doctor } from '@/types';
 import { sanitizeSearch } from '@/lib/validation';
 
+import TiltCard3D from '@/components/ui/TiltCard3D';
+
 export default function Telemedicine() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -83,18 +85,18 @@ export default function Telemedicine() {
         {activeTab === 'consult' ? (
           <>
             {/* How it works */}
-            <div className="grid grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               {[
                 { step: '1', icon: null, title: 'Choose Doctor', desc: 'Find your specialist' },
                 { step: '2', icon: null, title: 'Book Slot', desc: 'Pick date & time' },
                 { step: '3', icon: null, title: 'Pay Securely', desc: 'Multiple options' },
                 { step: '4', icon: null, title: 'Video Call', desc: 'Start consultation' },
               ].map(step => (
-                <div key={step.step} className="medical-card p-4 text-center">
+                <TiltCard3D key={step.step} maxTilt={8} translateZ={8} className="medical-card p-4 text-center rounded-2xl">
                   <div className="w-8 h-8 bg-sky-600 text-white rounded-full flex items-center justify-center text-sm font-bold mx-auto mb-2">{step.step}</div>
                   <p className="font-semibold text-slate-800 text-xs mt-1">{step.title}</p>
                   <p className="text-slate-400 text-xs mt-0.5">{step.desc}</p>
-                </div>
+                </TiltCard3D>
               ))}
             </div>
 
@@ -114,53 +116,55 @@ export default function Telemedicine() {
 
             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
               {filtered.map(doctor => (
-                <div key={doctor.id} className="medical-card p-5">
-                  <div className="flex items-start gap-3 mb-4">
-                    <div className="relative">
-                      <img src={doctor.avatar} alt={doctor.name} className="w-14 h-14 rounded-2xl object-cover border-2 border-slate-100" />
-                      <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${doctor.available ? 'bg-emerald-400' : 'bg-slate-300'}`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-slate-800 text-sm truncate">{doctor.name}</h3>
-                      <p className="text-sky-600 text-xs">{doctor.specialty}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <div className="flex items-center gap-0.5">
-                          <Star size={11} className="text-amber-400 fill-amber-400" />
-                          <span className="text-xs font-medium text-slate-700">{doctor.rating}</span>
+                <TiltCard3D key={doctor.id} maxTilt={8} translateZ={10} className="medical-card p-5 rounded-2xl flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-start gap-3 mb-4">
+                      <div className="relative">
+                        <img src={doctor.avatar} alt={doctor.name} className="w-14 h-14 rounded-2xl object-cover border-2 border-slate-100" />
+                        <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${doctor.available ? 'bg-emerald-400' : 'bg-slate-300'}`} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-slate-800 text-sm truncate">{doctor.name}</h3>
+                        <p className="text-sky-600 text-xs">{doctor.specialty}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="flex items-center gap-0.5">
+                            <Star size={11} className="text-amber-400 fill-amber-400" />
+                            <span className="text-xs font-medium text-slate-700">{doctor.rating}</span>
+                          </div>
+                          <span className="text-slate-200 text-xs">•</span>
+                          <span className="text-xs text-slate-400">{doctor.experience} yrs</span>
                         </div>
-                        <span className="text-slate-200 text-xs">•</span>
-                        <span className="text-xs text-slate-400">{doctor.experience} yrs</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <span className="font-bold text-slate-800">₹{doctor.consultationFee}</span>
+                        <span className="text-slate-400 text-xs ml-1">/ consult</span>
+                      </div>
+                      <div className={`text-xs font-medium flex items-center gap-1 ${doctor.available ? 'text-emerald-600' : 'text-slate-400'}`}>
+                        <Clock size={11} />
+                        {doctor.available ? 'Avail Now' : 'Avail Later'}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <span className="font-bold text-slate-800">₹{doctor.consultationFee}</span>
-                      <span className="text-slate-400 text-xs ml-1">/ consult</span>
-                    </div>
-                    <div className={`text-xs font-medium flex items-center gap-1 ${doctor.available ? 'text-emerald-600' : 'text-slate-400'}`}>
-                      <Clock size={11} />
-                      {doctor.available ? 'Avail Now' : 'Avail Later'}
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 pt-2">
                     <button
-                      onClick={() => startCall(doctor)}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition-colors"
+                      onClick={(e) => { e.stopPropagation(); startCall(doctor); }}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition-colors shadow-sm"
                     >
                       <Video size={13} />
                       Start Call
                     </button>
                     <button
-                      onClick={() => bookDoctor(doctor)}
+                      onClick={(e) => { e.stopPropagation(); bookDoctor(doctor); }}
                       className="flex-1 py-2.5 border border-sky-200 text-sky-600 rounded-xl text-xs font-semibold hover:bg-sky-50 transition-colors"
                     >
                       Book Slot
                     </button>
                   </div>
-                </div>
+                </TiltCard3D>
               ))}
             </div>
           </>

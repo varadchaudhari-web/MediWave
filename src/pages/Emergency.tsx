@@ -3,6 +3,8 @@ import { Phone, MapPin, Clock, AlertTriangle, CheckCircle, Navigation, Zap, Ambu
 import { AmbulanceRequest } from '@/types';
 import { toast } from 'sonner';
 
+import TiltCard3D from '@/components/ui/TiltCard3D';
+
 const TRACKING_STAGES = [
   { status: 'requested', label: 'SOS Received', desc: 'Your emergency request has been received', color: 'bg-amber-100 text-amber-700' },
   { status: 'dispatched', label: 'Ambulance Dispatched', desc: 'Nearest ambulance assigned and on the way', color: 'bg-sky-100 text-sky-700' },
@@ -101,7 +103,7 @@ export default function Emergency() {
           {/* SOS Button Panel */}
           <div className="space-y-6">
             {!sosActive ? (
-              <div className="medical-card p-8 text-center">
+              <TiltCard3D maxTilt={6} translateZ={10} glowColor="rgba(239, 68, 68, 0.12)" className="medical-card p-8 text-center rounded-3xl">
                 <h2 className="text-xl font-bold text-slate-800 mb-2">Medical Emergency?</h2>
                 <p className="text-slate-500 text-sm mb-8">Press the SOS button to dispatch an ambulance immediately to your location.</p>
 
@@ -128,14 +130,14 @@ export default function Emergency() {
                 )}
 
                 <div className="grid grid-cols-2 gap-3">
-                  <a href="tel:108" className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl hover:bg-red-100 transition-colors">
+                  <a href="tel:108" className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-2xl hover:bg-red-100 transition-colors">
                     <Phone size={16} className="text-red-500" />
                     <div className="text-left">
                       <p className="font-semibold text-red-700 text-sm">Call 108</p>
                       <p className="text-red-400 text-xs">National Helpline</p>
                     </div>
                   </a>
-                  <a href="tel:112" className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-xl hover:bg-amber-100 transition-colors">
+                  <a href="tel:112" className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-2xl hover:bg-amber-100 transition-colors">
                     <Phone size={16} className="text-amber-500" />
                     <div className="text-left">
                       <p className="font-semibold text-amber-700 text-sm">Call 112</p>
@@ -143,9 +145,9 @@ export default function Emergency() {
                     </div>
                   </a>
                 </div>
-              </div>
+              </TiltCard3D>
             ) : (
-              <div className="medical-card p-6">
+              <TiltCard3D maxTilt={6} translateZ={10} glowColor="rgba(239, 68, 68, 0.15)" className="medical-card p-6 rounded-3xl">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
                   <h3 className="font-bold text-slate-800">Emergency Active</h3>
@@ -199,11 +201,11 @@ export default function Emergency() {
                     </div>
                   </div>
                 )}
-              </div>
+              </TiltCard3D>
             )}
 
             {sosActive && (
-              <div className="medical-card p-5">
+              <TiltCard3D maxTilt={6} translateZ={8} className="medical-card p-5 rounded-3xl">
                 <h4 className="font-semibold text-slate-800 mb-4">Live Status</h4>
                 <div className="space-y-3">
                   {TRACKING_STAGES.map((stage, idx) => (
@@ -221,13 +223,13 @@ export default function Emergency() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </TiltCard3D>
             )}
           </div>
 
           {/* Right panel */}
           <div className="space-y-5">
-            <div className="medical-card p-5">
+            <TiltCard3D maxTilt={6} translateZ={8} className="medical-card p-5 rounded-3xl">
               <h4 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
                 <Zap size={18} className="text-amber-500" />
                 Emergency Types We Handle
@@ -249,9 +251,9 @@ export default function Emergency() {
                   </div>
                 ))}
               </div>
-            </div>
+            </TiltCard3D>
 
-            <div className="medical-card p-5">
+            <TiltCard3D maxTilt={6} translateZ={8} className="medical-card p-5 rounded-3xl">
               <h4 className="font-semibold text-slate-800 mb-4">Our Fleet</h4>
               <div className="space-y-3">
                 {[
@@ -272,9 +274,9 @@ export default function Emergency() {
                   </div>
                 ))}
               </div>
-            </div>
+            </TiltCard3D>
 
-            <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
+            <TiltCard3D maxTilt={6} translateZ={8} glowColor="rgba(239, 68, 68, 0.12)" className="bg-red-50 border border-red-200 rounded-3xl p-5">
               <div className="flex items-center gap-2 mb-3">
                 <AlertTriangle size={18} className="text-red-500" />
                 <h4 className="font-semibold text-red-800">First Aid Tips</h4>
@@ -287,7 +289,7 @@ export default function Emergency() {
                 <li>• Perform CPR if patient is unresponsive and not breathing</li>
                 <li>• Stay on the line with emergency services</li>
               </ul>
-            </div>
+            </TiltCard3D>
           </div>
         </div>
       </div>

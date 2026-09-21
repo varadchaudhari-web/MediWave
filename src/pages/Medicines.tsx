@@ -14,6 +14,8 @@ import Modal from '@/components/features/Modal';
 import MedicineProductImage from '@/components/features/MedicineProductImage';
 import { sanitizeSearch } from '@/lib/validation';
 
+import TiltCard3D from '@/components/ui/TiltCard3D';
+
 export default function Medicines() {
   const { items, addItem, removeItem, updateQty, totalPrice, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
@@ -99,20 +101,20 @@ export default function Medicines() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Trust badges */}
-        <div className="grid grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
           {[
             { icon: <Shield size={18} className="text-sky-600" />, title: '100% Genuine', desc: 'Verified products' },
             { icon: <Truck size={18} className="text-emerald-600" />, title: '24hr Delivery', desc: 'Express available' },
             { icon: <Clock size={18} className="text-amber-600" />, title: '24/7 Support', desc: 'Always available' },
             { icon: <CheckCircle size={18} className="text-purple-600" />, title: 'Easy Returns', desc: '7-day return policy' },
           ].map(b => (
-            <div key={b.title} className="medical-card p-3 flex items-center gap-2">
+            <TiltCard3D key={b.title} maxTilt={6} translateZ={6} className="medical-card p-3 flex items-center gap-2 rounded-2xl">
               {b.icon}
               <div>
                 <p className="font-semibold text-slate-800 text-xs">{b.title}</p>
                 <p className="text-slate-400 text-xs">{b.desc}</p>
               </div>
-            </div>
+            </TiltCard3D>
           ))}
         </div>
 
@@ -136,24 +138,32 @@ export default function Medicines() {
           {filtered.map(med => {
             const inCart = items.find(i => i.id === med.id);
             return (
-              <div key={med.id} className="medical-card p-4 cursor-pointer group" onClick={() => setSelectedMed(med)}>
-                <div className="relative mb-3">
-                  <MedicineProductImage medicine={med} className="h-32 w-full" />
-                  <span className="absolute top-2 right-2 bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full font-medium">{med.discount}% off</span>
-                  {med.requiresPrescription && (
-                    <span className="absolute top-2 left-2 bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">Rx</span>
-                  )}
-                </div>
+              <TiltCard3D
+                key={med.id}
+                maxTilt={8}
+                translateZ={10}
+                className="medical-card p-4 cursor-pointer group rounded-2xl flex flex-col justify-between"
+                onClick={() => setSelectedMed(med)}
+              >
                 <div>
-                  <h3 className="font-semibold text-slate-800 text-sm leading-tight group-hover:text-sky-600 transition-colors">{med.name}</h3>
-                  <p className="text-slate-400 text-xs mt-0.5">{med.genericName}</p>
-                  <div className="flex items-center gap-1 mt-1">
-                    <Star size={11} className="text-amber-400 fill-amber-400" />
-                    <span className="text-xs text-slate-600 font-medium">{med.rating}</span>
+                  <div className="relative mb-3">
+                    <MedicineProductImage medicine={med} className="h-32 w-full" />
+                    <span className="absolute top-2 right-2 bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full font-medium">{med.discount}% off</span>
+                    {med.requiresPrescription && (
+                      <span className="absolute top-2 left-2 bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">Rx</span>
+                    )}
                   </div>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="font-bold text-sky-600">₹{med.price}</span>
-                    <span className="text-slate-400 text-xs line-through">₹{med.mrp}</span>
+                  <div>
+                    <h3 className="font-semibold text-slate-800 text-sm leading-tight group-hover:text-sky-600 transition-colors">{med.name}</h3>
+                    <p className="text-slate-400 text-xs mt-0.5">{med.genericName}</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Star size={11} className="text-amber-400 fill-amber-400" />
+                      <span className="text-xs text-slate-600 font-medium">{med.rating}</span>
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="font-bold text-sky-600">₹{med.price}</span>
+                      <span className="text-slate-400 text-xs line-through">₹{med.mrp}</span>
+                    </div>
                   </div>
                 </div>
                 <div className="mt-3">
@@ -174,13 +184,13 @@ export default function Medicines() {
                   ) : (
                     <button
                       onClick={e => { e.stopPropagation(); handleAddToCart(med); }}
-                      className="w-full py-2 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition-colors"
+                      className="w-full py-2 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition-colors shadow-sm"
                     >
                       Add to Cart
                     </button>
                   )}
                 </div>
-              </div>
+              </TiltCard3D>
             );
           })}
         </div>
