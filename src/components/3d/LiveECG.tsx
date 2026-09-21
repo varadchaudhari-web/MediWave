@@ -192,16 +192,16 @@ export default function LiveECG({ className = '', height = 70 }: LiveECGProps) {
 
   return (
     <div className={`relative w-full ${className}`}>
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-white font-semibold text-sm">Live Consultations</span>
+          <span className="w-2.5 h-2.5 rounded-full bg-[#22c9a8] shrink-0" />
+          <span className="text-[#0c2136] font-bold text-sm font-sora">Live Consultations</span>
         </div>
-        <span className="text-sky-300 font-medium text-xs font-mono">
-          <span className="text-emerald-400 font-bold">{activeCount.toLocaleString()}</span> ongoing right now
+        <span className="text-[#5b7392] font-medium text-xs">
+          <span className="text-[#0ea5e9] font-bold">{activeCount.toLocaleString()}</span> ongoing right now
         </span>
       </div>
-      <div className="w-full relative overflow-hidden rounded-xl bg-sky-950/40 p-1 border border-white/10">
+      <div className="w-full relative overflow-hidden rounded-2xl bg-[#f0fdfa]/90 p-2 border border-[#ccfbf1] shadow-inner">
         <canvas ref={canvasRef} className="block w-full" />
       </div>
     </div>

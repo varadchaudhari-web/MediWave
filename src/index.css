@@ -4,84 +4,45 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 215 28% 9%;
+    --bg: #f4f9ff;
+    --card: #ffffff;
+    --line: #d9e8f7;
+    --ink: #0c2136;
+    --muted: #5b7392;
+    --blue: #0ea5e9;
+    --blue-deep: #0369a1;
+    --mint: #22c9a8;
+    --sos: #ef4444;
+
+    --background: 213 100% 98%;
+    --foreground: 212 64% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 28% 9%;
+    --card-foreground: 212 64% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 28% 9%;
+    --popover-foreground: 212 64% 13%;
 
-    --primary: 199 89% 39%;
+    --primary: 199 89% 48%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 94%;
-    --secondary-foreground: 215 28% 9%;
+    --secondary: 213 50% 94%;
+    --secondary-foreground: 212 64% 13%;
 
-    --muted: 210 40% 94%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 213 30% 94%;
+    --muted-foreground: 214 23% 47%;
 
-    --accent: 158 64% 40%;
+    --accent: 168 71% 46%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 88%;
-    --input: 214 32% 88%;
-    --ring: 199 89% 39%;
+    --border: 213 58% 91%;
+    --input: 213 58% 91%;
+    --ring: 199 89% 48%;
 
-    --radius: 0.75rem;
-
-    /* Medical custom tokens */
-    --medical-blue: 199 89% 39%;
-    --medical-blue-light: 199 89% 95%;
-    --medical-blue-dark: 199 89% 28%;
-    --medical-green: 158 64% 40%;
-    --medical-green-light: 158 64% 95%;
-    --medical-red: 0 84% 60%;
-    --medical-orange: 25 95% 53%;
-    --medical-purple: 262 83% 58%;
-
-    --sidebar-background: 215 28% 9%;
-    --sidebar-foreground: 210 40% 94%;
-    --sidebar-primary: 199 89% 39%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 25% 15%;
-    --sidebar-accent-foreground: 210 40% 94%;
-    --sidebar-border: 215 25% 18%;
-    --sidebar-ring: 199 89% 39%;
-  }
-
-  .dark {
-    --background: 215 28% 9%;
-    --foreground: 210 40% 98%;
-    --card: 215 25% 12%;
-    --card-foreground: 210 40% 98%;
-    --popover: 215 25% 12%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 199 89% 50%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 215 25% 18%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 215 25% 18%;
-    --muted-foreground: 215 16% 60%;
-    --accent: 158 64% 45%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 62% 45%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 215 25% 18%;
-    --input: 215 25% 18%;
-    --ring: 199 89% 50%;
-    --sidebar-background: 215 28% 7%;
-    --sidebar-foreground: 210 40% 94%;
-    --sidebar-primary: 199 89% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 25% 12%;
-    --sidebar-accent-foreground: 210 40% 94%;
-    --sidebar-border: 215 25% 14%;
-    --sidebar-ring: 199 89% 50%;
+    --radius: 1rem;
   }
 }
 
@@ -91,10 +52,12 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--bg);
+    color: var(--ink);
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -103,68 +66,48 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md active:scale-95;
+    @apply bg-[#0ea5e9] hover:bg-[#0369a1] text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-200 shadow-md shadow-sky-500/20 active:scale-95;
   }
   
   .btn-secondary {
-    @apply bg-white hover:bg-sky-50 text-sky-600 border border-sky-200 font-semibold py-2.5 px-6 rounded-xl transition-all duration-200;
+    @apply bg-white hover:bg-sky-50 text-[#0369a1] border border-[#d9e8f7] font-semibold py-2.5 px-6 rounded-xl transition-all duration-200 shadow-sm;
   }
   
   .btn-danger {
-    @apply bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-200;
+    @apply bg-[#ef4444] hover:bg-red-600 text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-200 shadow-md shadow-red-500/20;
   }
   
-  .btn-success {
-    @apply bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-200;
-  }
-
-  .card-glass {
-    @apply bg-white/80 backdrop-blur-sm border border-white/60 shadow-sm rounded-2xl;
-  }
-
-  .badge-primary {
-    @apply bg-sky-100 text-sky-700 text-xs font-medium px-2.5 py-0.5 rounded-full;
-  }
-
-  .badge-success {
-    @apply bg-emerald-100 text-emerald-700 text-xs font-medium px-2.5 py-0.5 rounded-full;
-  }
-
-  .badge-warning {
-    @apply bg-amber-100 text-amber-700 text-xs font-medium px-2.5 py-0.5 rounded-full;
-  }
-
-  .badge-danger {
-    @apply bg-red-100 text-red-700 text-xs font-medium px-2.5 py-0.5 rounded-full;
-  }
-
-  .section-heading {
-    @apply text-3xl md:text-4xl font-bold text-slate-800 font-sora;
-  }
-
-  .section-subheading {
-    @apply text-lg text-slate-500 mt-3 max-w-2xl;
-  }
-
-  .gradient-text {
-    @apply bg-gradient-to-r from-sky-600 to-cyan-500 bg-clip-text text-transparent;
-  }
-  
-  .hero-gradient {
-    background: linear-gradient(135deg, #0C1C2E 0%, #0F2D4A 40%, #0284C7 100%);
+  .hero-light-bg {
+    background: radial-gradient(1200px circle at 80% 20%, rgba(224, 242, 254, 0.7), transparent 60%),
+                radial-gradient(900px circle at 15% 40%, rgba(204, 251, 241, 0.5), transparent 50%),
+                linear-gradient(180deg, #f0f7ff 0%, #f4f9ff 60%, #ffffff 100%);
   }
 
   .medical-card {
-    @apply bg-white rounded-2xl shadow-sm border border-slate-100 hover:shadow-md hover:border-sky-100 transition-all duration-300;
+    background: #ffffff;
+    border: 1px solid #d9e8f7;
+    border-radius: 1.25rem;
+    box-shadow: 0 8px 30px -4px rgba(12, 33, 54, 0.04);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .stat-card {
-    @apply bg-white rounded-2xl p-6 shadow-sm border border-slate-100;
+  .medical-card:hover {
+    border-color: #93c5fd;
+    box-shadow: 0 16px 36px -4px rgba(14, 165, 233, 0.12);
+  }
+
+  .section-heading {
+    @apply text-3xl md:text-4xl font-extrabold text-[#0c2136] font-sora tracking-tight;
+  }
+
+  .section-subheading {
+    @apply text-base text-[#5b7392] mt-2 max-w-2xl;
   }
 }
 
