@@ -5,6 +5,7 @@ import { Eye, EyeOff, AlertCircle, Copy, CheckCircle } from 'lucide-react';
 import { demoCredentials } from '@/data/mockData';
 import { toast } from 'sonner';
 import logo from '@/assets/logo.png';
+import { isValidEmail, sanitizeEmail, sanitizePassword } from '@/lib/validation';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -33,8 +34,13 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    const cleanEmail = sanitizeEmail(email);
+    if (!isValidEmail(cleanEmail)) {
+      setError('Enter a valid email address.');
+      return;
+    }
     setLoading(true);
-    const success = await login(email, password);
+    const success = await login(cleanEmail, password);
     setLoading(false);
     if (!success) {
       setError('Invalid email or password. Use the demo credentials below.');
@@ -77,7 +83,7 @@ export default function Login() {
               <input
                 type="text"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={e => setEmail(sanitizeEmail(e.target.value))}
                 required
                 placeholder="you@example.com"
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 transition-shadow"
@@ -92,7 +98,7 @@ export default function Login() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={e => setPassword(sanitizePassword(e.target.value))}
                   required
                   placeholder="Enter your password"
                   className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 pr-10 transition-shadow"

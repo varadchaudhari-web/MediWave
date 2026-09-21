@@ -5,6 +5,7 @@ import { doctors, specializations } from '@/data/doctors';
 import { Doctor } from '@/types';
 import DoctorCard from '@/components/features/DoctorCard';
 import BookingModal from '@/components/features/BookingModal';
+import { sanitizeSearch } from '@/lib/validation';
 
 export default function Doctors() {
   const [searchParams] = useSearchParams();
@@ -51,7 +52,7 @@ export default function Doctors() {
               <input
                 type="text"
                 value={query}
-                onChange={e => setQuery(e.target.value)}
+                onChange={e => setQuery(sanitizeSearch(e.target.value))}
                 placeholder="Doctor name, specialty, or symptom..."
                 className="flex-1 text-sm text-slate-700 placeholder-slate-400 focus:outline-none"
               />

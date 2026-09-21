@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Linkedin, Youtube, Smartphone } from 'lucide-react';
-import logo from '@/assets/logo.png';
+import Logo from '@/components/ui/Logo';
 
 export default function Footer() {
   const [storeModal, setStoreModal] = useState<'ios' | 'android' | null>(null);
@@ -26,10 +26,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <img src={logo} alt="MediWave" className="w-9 h-9 rounded-xl object-contain bg-white" />
-              <span className="font-bold text-xl text-white font-sora">
-                Medi<span className="text-sky-400">Wave</span>
-              </span>
+              <Logo size={32} light={true} />
             </div>
             <p className="text-sm text-slate-400 leading-relaxed mb-6">
               India's most trusted healthcare platform. Connecting patients with the best doctors, labs, and hospitals.

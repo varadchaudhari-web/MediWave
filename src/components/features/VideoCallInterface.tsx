@@ -6,6 +6,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Mic, MicOff, Video, VideoOff, Phone, MessageCircle, X, Send, Monitor, Users, Signal } from 'lucide-react';
 import { toast } from 'sonner';
+import { sanitizeText } from '@/lib/validation';
 
 interface VideoCallInterfaceProps {
   doctorName: string;
@@ -142,11 +143,12 @@ export default function VideoCallInterface({
   };
 
   const sendChatMessage = () => {
-    if (!chatInput.trim()) return;
+    const cleanMessage = sanitizeText(chatInput, 300).trim();
+    if (!cleanMessage) return;
     setMessages(prev => [...prev, {
       id: Date.now().toString(),
       sender: isDoctor ? 'You (Doctor)' : 'You',
-      content: chatInput,
+      content: cleanMessage,
       time: 'Just now',
       mine: true,
     }]);
@@ -359,7 +361,7 @@ export default function VideoCallInterface({
             <input
               type="text"
               value={chatInput}
-              onChange={e => setChatInput(e.target.value)}
+              onChange={e => setChatInput(sanitizeText(e.target.value, 300))}
               onKeyDown={e => e.key === 'Enter' && sendChatMessage()}
               placeholder="Type message..."
               className="flex-1 bg-slate-700 text-white text-sm rounded-xl px-3 py-2 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500"

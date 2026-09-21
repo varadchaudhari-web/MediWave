@@ -9,6 +9,7 @@ import { doctors as initialDoctors } from '@/data/doctors';
 import { mockAppointments, medicalRecords as initialRecords } from '@/data/mockData';
 import { Doctor, Appointment, MedicalRecord } from '@/types';
 import { toast } from 'sonner';
+import { sanitizeAddress, sanitizeEmail, sanitizeMobile, sanitizeName, sanitizeText } from '@/lib/validation';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -196,12 +197,12 @@ export const AppDataProvider: React.FC<{ children: ReactNode }> = ({ children })
 
   // ── Doctors ──
   const addDoctor = (doc: Omit<Doctor, 'id'>) => {
-    const newDoc = { ...doc, id: `d_${Date.now()}` } as Doctor;
+    const newDoc = { ...doc, name: sanitizeName(doc.name).trim(), specialty: sanitizeText(doc.specialty, 50).trim(), hospital: sanitizeAddress(doc.hospital).trim(), id: `d_${Date.now()}` } as Doctor;
     setDoctorList(prev => [newDoc, ...prev]);
     toast.success(`Dr. ${doc.name} added successfully`);
   };
   const updateDoctor = (id: string, data: Partial<Doctor>) => {
-    setDoctorList(prev => prev.map(d => d.id === id ? { ...d, ...data } : d));
+    setDoctorList(prev => prev.map(d => d.id === id ? { ...d, ...data, name: data.name ? sanitizeName(data.name).trim() : d.name } : d));
     toast.success('Doctor profile updated');
   };
   const deleteDoctor = (id: string) => {
@@ -211,12 +212,12 @@ export const AppDataProvider: React.FC<{ children: ReactNode }> = ({ children })
 
   // ── Patients ──
   const addPatient = (p: Omit<Patient, 'id'>) => {
-    const newP = { ...p, id: `p_${Date.now()}` };
+    const newP = { ...p, name: sanitizeName(p.name).trim(), email: sanitizeEmail(p.email), phone: sanitizeMobile(p.phone), condition: sanitizeText(p.condition, 80).trim(), id: `p_${Date.now()}` };
     setPatientList(prev => [newP, ...prev]);
     toast.success(`Patient ${p.name} added`);
   };
   const updatePatient = (id: string, data: Partial<Patient>) => {
-    setPatientList(prev => prev.map(p => p.id === id ? { ...p, ...data } : p));
+    setPatientList(prev => prev.map(p => p.id === id ? { ...p, ...data, name: data.name ? sanitizeName(data.name).trim() : p.name, email: data.email ? sanitizeEmail(data.email) : p.email, phone: data.phone ? sanitizeMobile(data.phone) : p.phone } : p));
     toast.success('Patient record updated');
   };
   const deletePatient = (id: string) => {
@@ -226,7 +227,7 @@ export const AppDataProvider: React.FC<{ children: ReactNode }> = ({ children })
 
   // ── Appointments ──
   const addAppointment = (a: Appointment) => {
-    setAppointmentList(prev => [a, ...prev]);
+    setAppointmentList(prev => [{ ...a, patientName: sanitizeName(a.patientName).trim(), symptoms: a.symptoms ? sanitizeText(a.symptoms, 300).trim() : undefined }, ...prev]);
     toast.success('Appointment booked and synced across dashboards');
   };
   const updateAppointment = (id: string, data: Partial<Appointment>) => {
@@ -253,6 +254,8 @@ export const AppDataProvider: React.FC<{ children: ReactNode }> = ({ children })
   const addLabOrder = (order: Omit<LabOrder, 'id' | 'status' | 'reportReady'>) => {
     const newOrder: LabOrder = {
       ...order,
+      patient: sanitizeName(order.patient).trim(),
+      test: sanitizeText(order.test, 100).trim(),
       id: `LB${Date.now().toString().slice(-6)}`,
       status: 'booked',
       reportReady: false,
@@ -275,6 +278,9 @@ export const AppDataProvider: React.FC<{ children: ReactNode }> = ({ children })
     const suffix = Date.now().toString().slice(-6);
     const newClaim: InsuranceClaim = {
       ...claim,
+      patientName: sanitizeName(claim.patientName).trim(),
+      hospital: sanitizeAddress(claim.hospital).trim(),
+      treatment: sanitizeText(claim.treatment, 120).trim(),
       id: `CLM${suffix}`,
       claimNumber: `MWIC-2026-${suffix}`,
       date: new Date().toISOString().split('T')[0],

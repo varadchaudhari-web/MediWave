@@ -8,6 +8,7 @@ import VideoCallInterface from '@/components/features/VideoCallInterface';
 import SymptomChecker from '@/components/features/SymptomChecker';
 import BookingModal from '@/components/features/BookingModal';
 import { Doctor } from '@/types';
+import { sanitizeSearch } from '@/lib/validation';
 
 export default function Telemedicine() {
   const { isAuthenticated } = useAuth();
@@ -104,7 +105,7 @@ export default function Telemedicine() {
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={e => setSearchQuery(sanitizeSearch(e.target.value))}
                   placeholder="Search doctors by name or specialty..."
                   className="flex-1 text-sm focus:outline-none"
                 />

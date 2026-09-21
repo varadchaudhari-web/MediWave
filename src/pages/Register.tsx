@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { User, Stethoscope, Building2, FlaskConical, Pill } from 'lucide-react';
 import { UserRole } from '@/types';
 import logo from '@/assets/logo.png';
+import { isValidEmail, isValidMobile, isValidName, isValidPassword, sanitizeEmail, sanitizeMobile, sanitizeName, sanitizePassword } from '@/lib/validation';
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirm: '', role: 'patient', agree: false });
@@ -16,14 +17,17 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { toast.error('Enter a valid email address'); return; }
-    if (form.password.length < 8) { toast.error('Password must be at least 8 characters'); return; }
+    const cleanEmail = sanitizeEmail(form.email);
+    if (!isValidName(form.name)) { toast.error('Full name must contain only alphabets and spaces'); return; }
+    if (!isValidMobile(form.phone)) { toast.error('Mobile number must be exactly 10 digits'); return; }
+    if (!isValidEmail(cleanEmail)) { toast.error('Enter a valid email address'); return; }
+    if (!isValidPassword(form.password)) { toast.error('Password must be 8+ chars with letters and numbers'); return; }
     if (form.password !== form.confirm) { toast.error('Passwords do not match'); return; }
     if (!form.agree) { toast.error('Please accept terms'); return; }
     setLoading(true);
     const success = await register({
       name: form.name,
-      email: form.email,
+      email: cleanEmail,
       phone: form.phone,
       password: form.password,
       role: form.role as UserRole,
@@ -86,7 +90,8 @@ export default function Register() {
                   type="text"
                   required
                   value={form.name}
-                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                  onChange={e => setForm(f => ({ ...f, name: sanitizeName(e.target.value) }))}
+                  onBlur={() => form.name && !isValidName(form.name) && toast.error('Full name must be 2-50 alphabets only')}
                   placeholder="John Smith"
                   className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />
@@ -97,7 +102,8 @@ export default function Register() {
                   type="tel"
                   required
                   value={form.phone}
-                  onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                  onChange={e => setForm(f => ({ ...f, phone: sanitizeMobile(e.target.value) }))}
+                  onBlur={() => form.phone && !isValidMobile(form.phone) && toast.error('Mobile number must be exactly 10 digits')}
                   placeholder="+91 98765 43210"
                   className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />
@@ -110,7 +116,8 @@ export default function Register() {
                 type="text"
                 required
                 value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                onChange={e => setForm(f => ({ ...f, email: sanitizeEmail(e.target.value) }))}
+                onBlur={() => form.email && !isValidEmail(form.email) && toast.error('Enter a valid email address')}
                 placeholder="you@example.com"
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
               />
@@ -124,7 +131,8 @@ export default function Register() {
                     type={showPass ? 'text' : 'password'}
                     required
                     value={form.password}
-                    onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+                    onChange={e => setForm(f => ({ ...f, password: sanitizePassword(e.target.value) }))}
+                    onBlur={() => form.password && !isValidPassword(form.password) && toast.error('Password must include letters and numbers')}
                     placeholder="Min 8 characters"
                     className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 pr-10"
                   />
@@ -139,7 +147,7 @@ export default function Register() {
                   type="password"
                   required
                   value={form.confirm}
-                  onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))}
+                  onChange={e => setForm(f => ({ ...f, confirm: sanitizePassword(e.target.value) }))}
                   placeholder="Repeat password"
                   className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
                 />

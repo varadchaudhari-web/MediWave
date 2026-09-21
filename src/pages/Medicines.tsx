@@ -11,6 +11,8 @@ import {
 import { Medicine } from '@/types';
 import { toast } from 'sonner';
 import Modal from '@/components/features/Modal';
+import MedicineProductImage from '@/components/features/MedicineProductImage';
+import { sanitizeSearch } from '@/lib/validation';
 
 export default function Medicines() {
   const { items, addItem, removeItem, updateQty, totalPrice, clearCart } = useCart();
@@ -86,7 +88,7 @@ export default function Medicines() {
             <input
               type="text"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={e => setSearch(sanitizeSearch(e.target.value))}
               placeholder="Search medicine by name, generic name or condition..."
               className="flex-1 text-sm focus:outline-none"
             />
@@ -136,7 +138,7 @@ export default function Medicines() {
             return (
               <div key={med.id} className="medical-card p-4 cursor-pointer group" onClick={() => setSelectedMed(med)}>
                 <div className="relative mb-3">
-                  <img src={med.image} alt={med.name} className="w-full h-32 object-cover rounded-xl bg-slate-50" />
+                  <MedicineProductImage medicine={med} className="h-32 w-full" />
                   <span className="absolute top-2 right-2 bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full font-medium">{med.discount}% off</span>
                   {med.requiresPrescription && (
                     <span className="absolute top-2 left-2 bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">Rx</span>
@@ -194,7 +196,7 @@ export default function Medicines() {
             </div>
             <div className="p-5 space-y-4">
               <div className="flex gap-4">
-                <img src={selectedMed.image} alt={selectedMed.name} className="w-24 h-24 rounded-2xl object-cover border border-slate-100" />
+                <MedicineProductImage medicine={selectedMed} className="h-24 w-24 rounded-2xl" compact />
                 <div>
                   <p className="text-sky-600 text-sm font-medium">{selectedMed.genericName}</p>
                   <p className="text-slate-500 text-xs">{selectedMed.manufacturer}</p>
@@ -320,7 +322,14 @@ export default function Medicines() {
                   ) : (
                     items.map(item => (
                       <div key={item.id} className="flex items-center gap-3 bg-slate-50 rounded-xl p-3">
-                        <img src={item.image} alt={item.name} className="w-12 h-12 rounded-xl object-cover" />
+                        {(() => {
+                          const medicine = medicines.find(m => m.id === item.id);
+                          return medicine ? (
+                            <MedicineProductImage medicine={medicine} className="h-12 w-12" compact />
+                          ) : (
+                            <img src={item.image} alt={item.name} className="w-12 h-12 rounded-xl object-cover" />
+                          );
+                        })()}
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-slate-800 text-sm truncate">{item.name}</p>
                           <p className="text-sky-600 text-xs font-semibold">₹{item.price}</p>

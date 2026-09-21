@@ -176,7 +176,7 @@ export const testimonials: Testimonial[] = [
   {
     id: 't1',
     name: 'Rahul Mehrotra',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+    avatar: '/avatars/patient-1.svg',
     rating: 5,
     comment: 'MediWave has completely transformed how I manage my health. The video consultation feature is seamless and I can see my doctor from anywhere. The prescription delivery is fast too!',
     condition: 'Diabetes Management',
@@ -185,7 +185,7 @@ export const testimonials: Testimonial[] = [
   {
     id: 't2',
     name: 'Sunita Sharma',
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b3b42534?w=100&h=100&fit=crop&crop=face',
+    avatar: '/avatars/patient-2.svg',
     rating: 5,
     comment: 'As a busy working mom, MediWave is a lifesaver. I booked my son\'s vaccination appointment in 2 minutes and the doctor was available exactly on time for our video call.',
     condition: 'Pediatric Care',
@@ -194,7 +194,7 @@ export const testimonials: Testimonial[] = [
   {
     id: 't3',
     name: 'Arjun Krishnaswamy',
-    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&h=100&fit=crop&crop=face',
+    avatar: '/avatars/patient-3.svg',
     rating: 5,
     comment: 'The AI symptom checker helped me identify that my symptoms needed urgent attention. The emergency response was swift and the ambulance tracking was real-time accurate.',
     condition: 'Emergency Care',
@@ -203,7 +203,7 @@ export const testimonials: Testimonial[] = [
   {
     id: 't4',
     name: 'Preethi Rajagopal',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face',
+    avatar: '/avatars/patient-4.svg',
     rating: 5,
     comment: 'Getting my lab tests done at home was so convenient! The phlebotomist arrived on time, was very professional, and I got my reports on the app within 6 hours.',
     condition: 'Lab Tests',
@@ -212,7 +212,7 @@ export const testimonials: Testimonial[] = [
   {
     id: 't5',
     name: 'Deepak Nambiar',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+    avatar: '/avatars/patient-5.svg',
     rating: 4,
     comment: 'Excellent platform for mental health consultations. My psychiatrist consultations feel private and professional. The medication reminders feature is very helpful.',
     condition: 'Mental Health',
@@ -221,7 +221,7 @@ export const testimonials: Testimonial[] = [
   {
     id: 't6',
     name: 'Anita Bose',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
+    avatar: '/avatars/patient-6.svg',
     rating: 5,
     comment: 'Managing my mother\'s multiple conditions has become so much easier with MediWave. All her records, prescriptions, and appointments in one place. Highly recommended!',
     condition: 'Senior Care',

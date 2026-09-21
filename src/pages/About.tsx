@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Shield, Eye, Globe, Heart, FlaskConical, Users } from 'lucide-react';
+import AvatarWithFallback from '@/components/ui/AvatarWithFallback';
 
 export default function About() {
   const milestones = [
@@ -11,10 +12,10 @@ export default function About() {
   ];
 
   const team = [
-    { name: 'Dr. Arjun Mehta', role: 'CEO & Co-founder', img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face' },
-    { name: 'Priya Krishnamurthy', role: 'CTO & Co-founder', img: 'https://images.unsplash.com/photo-1494790108755-2616b3b42534?w=200&h=200&fit=crop&crop=face' },
-    { name: 'Dr. Rakesh Sharma', role: 'Chief Medical Officer', img: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=200&h=200&fit=crop&crop=face' },
-    { name: 'Ananya Gupta', role: 'VP Product', img: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200&h=200&fit=crop&crop=face' },
+    { name: 'Dr. Arjun Mehta', role: 'CEO & Co-founder', img: '/avatars/team-1.svg' },
+    { name: 'Priya Krishnamurthy', role: 'CTO & Co-founder', img: '/avatars/team-2.svg' },
+    { name: 'Dr. Rakesh Sharma', role: 'Chief Medical Officer', img: '/avatars/team-3.svg' },
+    { name: 'Ananya Gupta', role: 'VP Product', img: '/avatars/team-4.svg' },
   ];
 
   return (
@@ -82,7 +83,13 @@ export default function About() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {team.map(member => (
               <div key={member.name} className="text-center">
-                <img src={member.img} alt={member.name} className="w-20 h-20 rounded-2xl object-cover mx-auto border-2 border-sky-100" />
+                <AvatarWithFallback
+                  src={member.img}
+                  alt={member.name}
+                  fallbackName={member.name}
+                  className="w-20 h-20 rounded-2xl object-cover mx-auto border-2 border-sky-100"
+                  fallbackClassName="w-20 h-20 rounded-2xl bg-sky-100 text-sky-700 font-bold flex items-center justify-center text-base mx-auto border-2 border-sky-100"
+                />
                 <p className="font-semibold text-slate-800 mt-3">{member.name}</p>
                 <p className="text-sky-600 text-xs mt-0.5">{member.role}</p>
               </div>

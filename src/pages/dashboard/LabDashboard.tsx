@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { toast } from 'sonner';
+import { sanitizeSearch, sanitizeText } from '@/lib/validation';
 
 type Section = 'orders' | 'tests' | 'analytics' | 'settings';
 
@@ -71,7 +72,7 @@ export default function LabDashboard() {
               <h2 className="font-bold text-slate-800 text-xl">Lab Test Orders</h2>
               <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2">
                 <Search size={14} className="text-slate-400" />
-                <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search orders..." className="text-xs focus:outline-none w-40" />
+                <input type="text" value={search} onChange={e => setSearch(sanitizeSearch(e.target.value))} placeholder="Search orders..." className="text-xs focus:outline-none w-40" />
               </div>
             </div>
 
@@ -250,7 +251,7 @@ export default function LabDashboard() {
               ].map(s => (
                 <div key={s.label}>
                   <label className="text-sm font-medium text-slate-700 mb-1 block">{s.label}</label>
-                  <input type="text" defaultValue={s.value} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                  <input type="text" defaultValue={s.value} onChange={e => { e.currentTarget.value = sanitizeText(e.currentTarget.value, 120); }} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                 </div>
               ))}
               <div className="flex gap-3">
@@ -354,7 +355,7 @@ export default function LabDashboard() {
               </div>
               <div>
                 <label className="text-sm font-medium text-slate-700 mb-1 block">Lab Report Notes (Optional)</label>
-                <textarea rows={3} value={reportNotes} onChange={e => setReportNotes(e.target.value)}
+                <textarea rows={3} value={reportNotes} onChange={e => setReportNotes(sanitizeText(e.target.value, 500))}
                   placeholder="Add findings or notes..."
                   className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none" />
               </div>

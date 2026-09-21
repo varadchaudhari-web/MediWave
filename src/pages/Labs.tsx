@@ -7,6 +7,7 @@ import { Search, Home, Clock, CheckCircle, X, FlaskConical, MapPin, Phone } from
 import { LabTest } from '@/types';
 import { toast } from 'sonner';
 import { useAppData } from '@/contexts/AppDataContext';
+import { isValidCity, isValidEmail, isValidMobile, isValidPincode, sanitizeAddress, sanitizeCity, sanitizeEmail, sanitizeMobile, sanitizePincode, sanitizeSearch } from '@/lib/validation';
 
 export default function Labs() {
   const { isAuthenticated, user } = useAuth();
@@ -57,6 +58,10 @@ export default function Labs() {
         toast.error('Please fill all required address fields');
         return;
       }
+      if (!isValidMobile(homeForm.mobileNumber)) { toast.error('Mobile number must be exactly 10 digits'); return; }
+      if (homeForm.email && !isValidEmail(homeForm.email)) { toast.error('Enter a valid email address'); return; }
+      if (!isValidCity(homeForm.city)) { toast.error('City must contain only alphabets'); return; }
+      if (!isValidPincode(homeForm.pincode)) { toast.error('Pincode must be exactly 6 digits'); return; }
     }
     setTimeout(() => {
       const order = addLabOrder({
@@ -103,7 +108,7 @@ export default function Labs() {
               <input
                 type="text"
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onChange={e => setSearch(sanitizeSearch(e.target.value))}
                 placeholder="Search test name or condition..."
                 className="flex-1 text-sm focus:outline-none"
               />
@@ -355,20 +360,22 @@ export default function Labs() {
                           <p className="text-sm font-semibold text-slate-700">Home Collection Address</p>
                           <div>
                             <label className="text-xs font-medium text-slate-600 block mb-1">Full Address *</label>
-                            <input type="text" value={homeForm.fullAddress} onChange={e => setHomeForm(f => ({ ...f, fullAddress: e.target.value }))}
+                            <input type="text" value={homeForm.fullAddress} onChange={e => setHomeForm(f => ({ ...f, fullAddress: sanitizeAddress(e.target.value) }))}
                               placeholder="Flat/House no, Building, Street, Area"
                               className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                           </div>
                           <div className="grid grid-cols-2 gap-3">
                             <div>
                               <label className="text-xs font-medium text-slate-600 block mb-1">Mobile Number *</label>
-                              <input type="tel" value={homeForm.mobileNumber} onChange={e => setHomeForm(f => ({ ...f, mobileNumber: e.target.value }))}
+                              <input type="tel" inputMode="numeric" value={homeForm.mobileNumber} onChange={e => setHomeForm(f => ({ ...f, mobileNumber: sanitizeMobile(e.target.value) }))}
+                                onBlur={() => homeForm.mobileNumber && !isValidMobile(homeForm.mobileNumber) && toast.error('Mobile number must be exactly 10 digits')}
                                 placeholder="+91 XXXXX XXXXX"
                                 className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                             </div>
                             <div>
                               <label className="text-xs font-medium text-slate-600 block mb-1">Email</label>
-                              <input type="email" value={homeForm.email} onChange={e => setHomeForm(f => ({ ...f, email: e.target.value }))}
+                              <input type="text" value={homeForm.email} onChange={e => setHomeForm(f => ({ ...f, email: sanitizeEmail(e.target.value) }))}
+                                onBlur={() => homeForm.email && !isValidEmail(homeForm.email) && toast.error('Enter a valid email address')}
                                 placeholder="your@email.com"
                                 className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                             </div>
@@ -376,13 +383,15 @@ export default function Labs() {
                           <div className="grid grid-cols-2 gap-3">
                             <div>
                               <label className="text-xs font-medium text-slate-600 block mb-1">City *</label>
-                              <input type="text" value={homeForm.city} onChange={e => setHomeForm(f => ({ ...f, city: e.target.value }))}
+                              <input type="text" value={homeForm.city} onChange={e => setHomeForm(f => ({ ...f, city: sanitizeCity(e.target.value) }))}
+                                onBlur={() => homeForm.city && !isValidCity(homeForm.city) && toast.error('City must contain only alphabets')}
                                 placeholder="Mumbai"
                                 className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                             </div>
                             <div>
                               <label className="text-xs font-medium text-slate-600 block mb-1">Pincode *</label>
-                              <input type="text" value={homeForm.pincode} onChange={e => setHomeForm(f => ({ ...f, pincode: e.target.value }))}
+                              <input type="text" inputMode="numeric" value={homeForm.pincode} onChange={e => setHomeForm(f => ({ ...f, pincode: sanitizePincode(e.target.value) }))}
+                                onBlur={() => homeForm.pincode && !isValidPincode(homeForm.pincode) && toast.error('Pincode must be exactly 6 digits')}
                                 placeholder="400001" maxLength={6}
                                 className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                             </div>
@@ -408,7 +417,7 @@ export default function Labs() {
                       )}
 
                       <button onClick={() => {
-                        if (homeCollection && !homeForm.fullAddress || homeCollection && !homeForm.mobileNumber || homeCollection && !homeForm.city || homeCollection && !homeForm.pincode) {
+                        if (homeCollection && (!homeForm.fullAddress || !isValidMobile(homeForm.mobileNumber) || !isValidCity(homeForm.city) || !isValidPincode(homeForm.pincode) || (homeForm.email && !isValidEmail(homeForm.email)))) {
                           toast.error('Please fill all required fields');
                           return;
                         }

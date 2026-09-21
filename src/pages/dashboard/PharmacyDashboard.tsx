@@ -11,6 +11,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, L
 import { medicines } from '@/data/medicines';
 import { toast } from 'sonner';
 import { generateReport } from '@/lib/reportGenerator';
+import { sanitizeSearch, sanitizeText } from '@/lib/validation';
 
 type Section = 'orders' | 'inventory' | 'analytics' | 'billing' | 'settings';
 
@@ -117,7 +118,7 @@ export default function PharmacyDashboard() {
                   <h3 className="font-semibold text-slate-800 flex-1">Orders</h3>
                   <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
                     <Search size={14} className="text-slate-400" />
-                    <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search orders..." className="text-xs bg-transparent focus:outline-none w-32" />
+                    <input type="text" value={search} onChange={e => setSearch(sanitizeSearch(e.target.value))} placeholder="Search orders..." className="text-xs bg-transparent focus:outline-none w-32" />
                   </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -210,7 +211,7 @@ export default function PharmacyDashboard() {
               <div className="p-5 border-b border-slate-100 flex items-center gap-3">
                 <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 flex-1 max-w-xs">
                   <Search size={14} className="text-slate-400" />
-                  <input type="text" placeholder="Search medicines..." className="text-xs bg-transparent focus:outline-none flex-1" />
+                  <input type="text" onChange={e => { e.currentTarget.value = sanitizeSearch(e.currentTarget.value); }} placeholder="Search medicines..." className="text-xs bg-transparent focus:outline-none flex-1" />
                 </div>
               </div>
               <div className="overflow-x-auto">
@@ -361,7 +362,7 @@ export default function PharmacyDashboard() {
               ].map(s => (
                 <div key={s.label}>
                   <label className="text-sm font-medium text-slate-700 mb-1 block">{s.label}</label>
-                  <input type="text" defaultValue={s.value} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                  <input type="text" defaultValue={s.value} onChange={e => { e.currentTarget.value = sanitizeText(e.currentTarget.value, 120); }} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                 </div>
               ))}
               <div className="flex gap-3 pt-2">

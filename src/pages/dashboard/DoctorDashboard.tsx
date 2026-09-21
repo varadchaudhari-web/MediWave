@@ -11,6 +11,7 @@ import {
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import VideoCallInterface from '@/components/features/VideoCallInterface';
 import { generateReport } from '@/lib/reportGenerator';
+import { sanitizeSearch, sanitizeText } from '@/lib/validation';
 
 type Section = 'overview' | 'appointments' | 'patients' | 'telemedicine' | 'prescriptions' | 'earnings' | 'schedule' | 'profile';
 
@@ -98,8 +99,9 @@ export default function DoctorDashboard() {
   );
 
   const sendChat = () => {
-    if (!chatInput.trim()) return;
-    setChatMessages(prev => [...prev, { id: Date.now().toString(), sender: 'You', content: chatInput, time: 'Now', mine: true }]);
+    const cleanMessage = sanitizeText(chatInput, 300).trim();
+    if (!cleanMessage) return;
+    setChatMessages(prev => [...prev, { id: Date.now().toString(), sender: 'You', content: cleanMessage, time: 'Now', mine: true }]);
     setChatInput('');
     setTimeout(() => {
       setChatMessages(prev => [...prev, {
@@ -129,8 +131,8 @@ export default function DoctorDashboard() {
         <div className="fixed inset-0 z-50 bg-slate-900 p-4 flex flex-col" style={{ left: sidebarCollapsed ? 64 : 256 }}>
           <VideoCallInterface
             doctorName="Dr. Sarah Mitchell"
-            doctorAvatar="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
-            doctorSpecialty="Patient"
+            doctorAvatar="/avatars/dr-priya.svg"
+            doctorSpecialty="Cardiology"
             patientName="John Smith"
             isDoctor={true}
             onEnd={() => setInVideoCall(false)}
@@ -315,7 +317,7 @@ export default function DoctorDashboard() {
               <h2 className="font-bold text-slate-800 text-xl">My Patients</h2>
               <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2">
                 <Search size={14} className="text-slate-400" />
-                <input type="text" value={patientSearch} onChange={e => setPatientSearch(e.target.value)} placeholder="Search patients..." className="flex-1 text-xs focus:outline-none" />
+                <input type="text" value={patientSearch} onChange={e => setPatientSearch(sanitizeSearch(e.target.value))} placeholder="Search patients..." className="flex-1 text-xs focus:outline-none" />
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
@@ -478,7 +480,7 @@ export default function DoctorDashboard() {
                   ))}
                 </div>
                 <div className="p-3 border-t border-slate-100 flex gap-2">
-                  <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendChat()}
+                  <input type="text" value={chatInput} onChange={e => setChatInput(sanitizeText(e.target.value, 300))} onKeyDown={e => e.key === 'Enter' && sendChat()}
                     placeholder="Type a message to patient..."
                     className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-sky-500"
                   />

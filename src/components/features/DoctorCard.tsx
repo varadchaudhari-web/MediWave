@@ -5,6 +5,8 @@ import { Star, MapPin, Award, Video, Clock, MessageCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { LoginRequiredModal } from './Modal';
 
+import AvatarWithFallback from '@/components/ui/AvatarWithFallback';
+
 interface DoctorCardProps {
   doctor: Doctor;
   onBook?: (doctor: Doctor) => void;
@@ -33,10 +35,12 @@ export default function DoctorCard({ doctor, onBook }: DoctorCardProps) {
         <div className="flex gap-4">
           {/* Avatar */}
           <div className="shrink-0">
-            <img
+            <AvatarWithFallback
               src={doctor.avatar}
               alt={doctor.name}
+              fallbackName={doctor.name}
               className="w-16 h-16 rounded-2xl object-cover border-2 border-slate-100 group-hover:border-sky-100 transition-colors"
+              fallbackClassName="w-16 h-16 rounded-2xl bg-sky-100 text-sky-700 font-bold flex items-center justify-center text-sm border-2 border-slate-100"
             />
           </div>
 

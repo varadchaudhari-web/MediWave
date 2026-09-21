@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { useAppData } from '@/contexts/AppDataContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { sanitizeText } from '@/lib/validation';
 
 interface BookingModalProps {
   doctor: Doctor | null;
@@ -242,7 +243,7 @@ export default function BookingModal({ doctor, isOpen, onClose }: BookingModalPr
                 <label className="text-sm font-medium text-slate-700 mb-2 block">Symptoms / Reason for Visit</label>
                 <textarea
                   value={symptoms}
-                  onChange={e => setSymptoms(e.target.value)}
+                  onChange={e => setSymptoms(sanitizeText(e.target.value, 300))}
                   placeholder="Describe your symptoms or reason for visit (optional but helpful)..."
                   rows={4}
                   className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none"

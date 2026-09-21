@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { FileText, Upload, Download, Search, X, Calendar, Lock, Pill, FlaskConical, Syringe, Building2, Shield } from 'lucide-react';
 import { MedicalRecord } from '@/types';
 import { generateReport } from '@/lib/reportGenerator';
+import { sanitizeSearch } from '@/lib/validation';
 
 export default function Records() {
   const { isAuthenticated } = useAuth();
@@ -87,7 +88,7 @@ export default function Records() {
             <input
               type="text"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={e => setSearch(sanitizeSearch(e.target.value))}
               placeholder="Search records..."
               className="flex-1 bg-transparent text-white placeholder-white/50 text-sm focus:outline-none"
             />

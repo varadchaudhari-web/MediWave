@@ -13,6 +13,7 @@ import BookingModal from '@/components/features/BookingModal';
 import { Doctor } from '@/types';
 import { toast } from 'sonner';
 import { generateReport } from '@/lib/reportGenerator';
+import { clampPastDate, isValidMobile, isValidName, sanitizeAddress, sanitizeCity, sanitizeMobile, sanitizeMoney, sanitizeName, sanitizeText } from '@/lib/validation';
 
 type Section = 'overview' | 'appointments' | 'records' | 'prescriptions' | 'labs' | 'medicines' | 'billing' | 'insurance' | 'notifications' | 'profile' | 'emergency';
 
@@ -67,7 +68,13 @@ export default function PatientDashboard() {
   ];
 
   const saveProfile = () => {
-    updateProfile(profileForm);
+    if (!isValidName(profileForm.name)) { toast.error('Full name must contain only alphabets and spaces'); return; }
+    if (profileForm.phone && !isValidMobile(profileForm.phone)) { toast.error('Mobile number must be exactly 10 digits'); return; }
+    updateProfile({
+      ...profileForm,
+      name: profileForm.name.trim(),
+      address: profileForm.address.trim(),
+    });
     setEditProfile(false);
   };
 
@@ -83,7 +90,7 @@ export default function PatientDashboard() {
       insurer: claimForm.insurer,
       hospital: claimForm.hospital,
       treatment: claimForm.treatment,
-      amount: Number(claimForm.amount),
+      amount: Number(sanitizeMoney(claimForm.amount)),
       documents: claimForm.documents,
     });
     setClaimForm({ policy: 'MediWave Plus', insurer: 'ICICI Lombard', hospital: 'Apollo Hospitals', treatment: '', amount: '', documents: ['Final bill'] });
@@ -544,7 +551,15 @@ export default function PatientDashboard() {
                       <input
                         type={field.type}
                         value={(profileForm as Record<string, string>)[field.key]}
-                        onChange={e => setProfileForm(f => ({ ...f, [field.key]: e.target.value }))}
+                        onChange={e => setProfileForm(f => ({
+                          ...f,
+                          [field.key]: field.key === 'name' ? sanitizeName(e.target.value) :
+                            field.key === 'phone' ? sanitizeMobile(e.target.value) :
+                            field.key === 'address' ? sanitizeAddress(e.target.value) :
+                            field.key === 'gender' ? sanitizeCity(e.target.value) :
+                            field.key === 'dateOfBirth' ? clampPastDate(e.target.value) :
+                            sanitizeText(e.target.value, 50),
+                        }))}
                         className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
                       />
                     </div>
@@ -850,10 +865,10 @@ export default function PatientDashboard() {
               </div>
               <div className="grid sm:grid-cols-2 gap-3">
                 <label className="text-sm font-medium text-slate-700">Treatment / Reason
-                  <input value={claimForm.treatment} onChange={e => setClaimForm(f => ({ ...f, treatment: e.target.value }))} placeholder="e.g. Cardiology consultation and tests" className="mt-1 w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm" />
+                  <input value={claimForm.treatment} onChange={e => setClaimForm(f => ({ ...f, treatment: sanitizeText(e.target.value, 120) }))} placeholder="e.g. Cardiology consultation and tests" className="mt-1 w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm" />
                 </label>
                 <label className="text-sm font-medium text-slate-700">Claim Amount
-                  <input type="text" inputMode="numeric" value={claimForm.amount} onChange={e => setClaimForm(f => ({ ...f, amount: e.target.value.replace(/[^0-9]/g, '') }))} placeholder="12400" className="mt-1 w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm" />
+                  <input type="text" inputMode="numeric" value={claimForm.amount} onChange={e => setClaimForm(f => ({ ...f, amount: sanitizeMoney(e.target.value) }))} placeholder="12400" className="mt-1 w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm" />
                 </label>
               </div>
               <div>

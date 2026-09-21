@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronDown, Search, BookOpen, Calendar, CreditCard, FileText, ArrowRight, Phone, Mail, MessageCircle, UserPlus, Stethoscope, Video, RefreshCw, Download, Upload, Shield, HelpCircle } from 'lucide-react';
 import { faqData } from '@/data/mockData';
 import Modal from '@/components/features/Modal';
+import { sanitizeSearch } from '@/lib/validation';
 
 type HelpArticle = {
   title: string;
@@ -392,7 +393,7 @@ export default function Help() {
             <input
               type="text"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={e => setSearch(sanitizeSearch(e.target.value))}
               placeholder="Search for help articles..."
               className="flex-1 text-sm focus:outline-none placeholder-slate-400"
             />

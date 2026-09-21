@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Activity } from 'lucide-react';
 import { SymptomMessage } from '@/types';
+import { sanitizeText } from '@/lib/validation';
 
 const aiResponses: Record<string, { response: string; suggestions?: string[] }> = {
   default: {
@@ -86,12 +87,13 @@ export default function SymptomChecker() {
   }, [messages]);
 
   const sendMessage = (text: string) => {
-    if (!text.trim()) return;
+    const cleanText = sanitizeText(text, 300).trim();
+    if (!cleanText) return;
 
     const userMsg: SymptomMessage = {
       id: Date.now().toString(),
       role: 'user',
-      content: text,
+      content: cleanText,
       timestamp: new Date(),
     };
 
@@ -100,7 +102,7 @@ export default function SymptomChecker() {
     setIsTyping(true);
 
     setTimeout(() => {
-      const aiResp = getAIResponse(text);
+      const aiResp = getAIResponse(cleanText);
       const aiMsg: SymptomMessage = {
         id: (Date.now() + 1).toString(),
         role: 'ai',
@@ -187,7 +189,7 @@ export default function SymptomChecker() {
           <input
             type="text"
             value={input}
-            onChange={e => setInput(e.target.value)}
+            onChange={e => setInput(sanitizeText(e.target.value, 300))}
             onKeyDown={e => e.key === 'Enter' && sendMessage(input)}
             placeholder="Describe your symptoms..."
             className="flex-1 px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"

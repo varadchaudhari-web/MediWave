@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MapPin, Briefcase, Clock, ArrowRight, Search, TrendingUp, Users, DollarSign, Heart } from 'lucide-react';
+import { sanitizeSearch } from '@/lib/validation';
 
 const jobs = [
   { id: 1, title: 'Senior Full Stack Engineer', dept: 'Engineering', location: 'Bangalore', type: 'Full-time', posted: '3 days ago', desc: 'Build scalable healthcare platform serving millions of patients across India.' },
@@ -35,7 +36,7 @@ export default function Careers() {
           </p>
           <div className="flex items-center gap-3 bg-white rounded-2xl px-5 py-3.5 shadow-lg max-w-xl mx-auto">
             <Search size={18} className="text-slate-400" />
-            <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search roles..." className="flex-1 text-sm focus:outline-none" />
+            <input type="text" value={search} onChange={e => setSearch(sanitizeSearch(e.target.value))} placeholder="Search roles..." className="flex-1 text-sm focus:outline-none" />
           </div>
         </div>
       </div>

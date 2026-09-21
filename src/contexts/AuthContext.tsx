@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { User, UserRole } from '@/types';
 import { demoCredentials } from '@/data/mockData';
 import { toast } from 'sonner';
+import { sanitizeEmail, sanitizeMobile, sanitizeName, sanitizePassword } from '@/lib/validation';
 
 interface AuthContextType {
   user: User | null;
@@ -29,7 +30,7 @@ const mockUsers: User[] = [
     name: 'John Smith',
     email: 'patient@mediwave.health',
     role: 'patient',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
+    avatar: '/avatars/patient-1.svg',
     phone: '+91 98765 43210',
     address: '42, Green Park, New Delhi 110016',
     dateOfBirth: '1988-03-15',
@@ -42,7 +43,7 @@ const mockUsers: User[] = [
     name: 'Dr. Sarah Mitchell',
     email: 'doctor@mediwave.health',
     role: 'doctor',
-    avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&fit=crop&crop=face',
+    avatar: '/avatars/dr-priya.svg',
     phone: '+91 99887 65432',
     address: 'Apollo Hospitals, Bandra West, Mumbai',
     gender: 'Female',
@@ -53,7 +54,7 @@ const mockUsers: User[] = [
     name: 'Raj Malhotra',
     email: 'admin@mediwave.health',
     role: 'admin',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
+    avatar: '/avatars/patient-5.svg',
     phone: '+91 88776 65544',
     createdAt: '2023-01-01',
   },
@@ -113,14 +114,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     await new Promise(r => setTimeout(r, 800));
 
-    const registeredUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-    const cred = demoCredentials.find(c => c.email === email && c.password === password);
+    const cleanEmail = sanitizeEmail(email);
+    const cleanPassword = sanitizePassword(password);
+    const registeredUser = registeredUsers.find(u => u.email.toLowerCase() === cleanEmail && u.password === cleanPassword);
+    const cred = demoCredentials.find(c => c.email === cleanEmail && c.password === cleanPassword);
     if (!cred && !registeredUser) {
       setIsLoading(false);
       return false;
     }
 
-    const foundUser = registeredUser || mockUsers.find(u => u.email === email);
+    const foundUser = registeredUser || mockUsers.find(u => u.email === cleanEmail);
     if (foundUser) {
       const { password: _password, ...safeUser } = foundUser as User & { password?: string };
       setUser(safeUser);
@@ -137,7 +140,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const register = async (data: RegisterAccountInput): Promise<boolean> => {
     setIsLoading(true);
     await new Promise(r => setTimeout(r, 650));
-    const normalizedEmail = data.email.trim().toLowerCase();
+    const normalizedEmail = sanitizeEmail(data.email);
     const emailExists = [...mockUsers, ...registeredUsers].some(u => u.email.toLowerCase() === normalizedEmail);
     if (emailExists) {
       setIsLoading(false);
@@ -147,14 +150,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const newUser: User & { password: string } = {
       id: `${data.role}_${Date.now()}`,
-      name: data.name.trim(),
+      name: sanitizeName(data.name).trim(),
       email: normalizedEmail,
       role: data.role,
-      phone: data.phone.trim(),
+      phone: sanitizeMobile(data.phone),
       avatar: '',
       createdAt: new Date().toISOString().split('T')[0],
     };
-    newUser.password = data.password;
+    newUser.password = sanitizePassword(data.password);
 
     const updatedUsers = [newUser, ...registeredUsers];
     setRegisteredUsers(updatedUsers);
@@ -175,7 +178,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const updateProfile = (data: Partial<User>) => {
     if (user) {
-      const updated = { ...user, ...data };
+      const updated = { ...user, ...data, name: data.name ? sanitizeName(data.name).trim() : user.name, email: data.email ? sanitizeEmail(data.email) : user.email, phone: data.phone ? sanitizeMobile(data.phone) : user.phone };
       setUser(updated);
       localStorage.setItem('mediwave_user', JSON.stringify(updated));
       toast.success('Profile updated successfully');

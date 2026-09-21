@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { isValidEmail, isValidMobile, isValidName, sanitizeEmail, sanitizeMobile, sanitizeName, sanitizeText } from '@/lib/validation';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
@@ -8,6 +9,10 @@ export default function Contact() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isValidName(form.name)) { toast.error('Full name must contain only alphabets and spaces'); return; }
+    if (!isValidEmail(form.email)) { toast.error('Enter a valid email address'); return; }
+    if (form.phone && !isValidMobile(form.phone)) { toast.error('Mobile number must be exactly 10 digits'); return; }
+    if (form.message.trim().length < 10) { toast.error('Message must be at least 10 characters'); return; }
     setTimeout(() => setSubmitted(true), 600);
     toast.success('Message sent! We\'ll respond within 24 hours.');
   };
@@ -70,17 +75,17 @@ export default function Contact() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-slate-700 mb-1.5 block">Full Name *</label>
-                      <input required type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="John Smith" className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                      <input required type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: sanitizeName(e.target.value) }))} onBlur={() => form.name && !isValidName(form.name) && toast.error('Full name must be 2-50 alphabets only')} placeholder="John Smith" className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                     </div>
                     <div>
                       <label className="text-sm font-medium text-slate-700 mb-1.5 block">Email *</label>
-                      <input required type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="you@email.com" className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                      <input required type="text" value={form.email} onChange={e => setForm(f => ({ ...f, email: sanitizeEmail(e.target.value) }))} onBlur={() => form.email && !isValidEmail(form.email) && toast.error('Enter a valid email address')} placeholder="you@email.com" className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-slate-700 mb-1.5 block">Phone</label>
-                      <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+91 98765 43210" className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                      <input type="tel" inputMode="numeric" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: sanitizeMobile(e.target.value) }))} onBlur={() => form.phone && !isValidMobile(form.phone) && toast.error('Mobile number must be exactly 10 digits')} placeholder="+91 98765 43210" className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                     </div>
                     <div>
                       <label className="text-sm font-medium text-slate-700 mb-1.5 block">Subject *</label>
@@ -96,7 +101,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-slate-700 mb-1.5 block">Message *</label>
-                    <textarea required value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))} placeholder="How can we help you?" rows={5} className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none" />
+                    <textarea required value={form.message} onChange={e => setForm(f => ({ ...f, message: sanitizeText(e.target.value, 500) }))} placeholder="How can we help you?" rows={5} className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none" />
                   </div>
                   <button type="submit" className="w-full py-3.5 bg-sky-600 text-white rounded-xl font-semibold hover:bg-sky-700 transition-colors flex items-center justify-center gap-2 shadow-sm">
                     <Send size={16} />

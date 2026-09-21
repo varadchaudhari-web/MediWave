@@ -17,6 +17,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, L
 import { demoCredentials } from '@/data/mockData';
 import { toast } from 'sonner';
 import { generateReport } from '@/lib/reportGenerator';
+import { isValidName, sanitizeAddress, sanitizeAge, sanitizeName, sanitizeSearch, sanitizeText } from '@/lib/validation';
 
 type Section = 'overview' | 'users' | 'doctors' | 'hospitals' | 'appointments' | 'compliance' | 'analytics' | 'emergency' | 'reports' | 'settings';
 
@@ -85,13 +86,14 @@ export default function SuperAdminDashboard() {
   );
 
   const handleAddDoctor = () => {
-    if (!newDoctor.name || !newDoctor.specialty) { toast.error('Name and specialty required'); return; }
+    if (!isValidName(newDoctor.name)) { toast.error('Doctor name must contain only alphabets and spaces'); return; }
+    if (!newDoctor.specialty.trim()) { toast.error('Specialty required'); return; }
     addDoctor({
       name: newDoctor.name, specialty: newDoctor.specialty, subSpecialty: '',
       qualification: 'MBBS, MD', experience: parseInt(newDoctor.experience) || 5,
       rating: 4.5, reviewCount: 0, consultationFee: 800,
       languages: ['English', 'Hindi'], hospital: newDoctor.hospital || 'MediWave Hospital',
-      location: 'Mumbai', avatar: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=100&h=100&fit=crop&crop=face',
+      location: 'Mumbai', avatar: '/avatars/dr-vikram.svg',
       available: true, availableSlots: ['10:00 AM', '02:00 PM', '04:00 PM'],
       bio: 'Expert specialist.', patients: 0, registrationNo: newDoctor.registrationNo || 'MCI-2024-NEW',
       nextAvailable: 'Today', tags: [newDoctor.specialty], telemedicineEnabled: true,
@@ -211,7 +213,7 @@ export default function SuperAdminDashboard() {
               <h2 className="font-bold text-slate-800 text-xl">All Users ({allUsers.length + patients.length})</h2>
               <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2">
                 <Search size={14} className="text-slate-400" />
-                <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search users..." className="text-xs focus:outline-none w-40" />
+                <input type="text" value={search} onChange={e => setSearch(sanitizeSearch(e.target.value))} placeholder="Search users..." className="text-xs focus:outline-none w-40" />
               </div>
             </div>
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
@@ -271,7 +273,7 @@ export default function SuperAdminDashboard() {
               <div className="flex gap-3">
                 <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2">
                   <Search size={14} className="text-slate-400" />
-                  <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search doctors..." className="text-xs focus:outline-none w-36" />
+                  <input type="text" value={search} onChange={e => setSearch(sanitizeSearch(e.target.value))} placeholder="Search doctors..." className="text-xs focus:outline-none w-36" />
                 </div>
                 <button onClick={() => setAddDoctorModal(true)} className="flex items-center gap-2 px-4 py-2 bg-sky-600 text-white rounded-xl text-sm font-medium hover:bg-sky-700">
                   <Plus size={16} /> Add Doctor
@@ -559,7 +561,7 @@ export default function SuperAdminDashboard() {
               ].map(s => (
                 <div key={s.label} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
                   <label className="text-xs font-medium text-slate-500 uppercase tracking-wide block mb-2">{s.label}</label>
-                  <input type="text" defaultValue={s.value} className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                  <input type="text" defaultValue={s.value} onChange={e => { e.currentTarget.value = sanitizeText(e.currentTarget.value, 120); }} className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                 </div>
               ))}
             </div>
@@ -702,9 +704,15 @@ export default function SuperAdminDashboard() {
               ].map(f => (
                 <div key={f.key}>
                   <label className="text-sm font-medium text-slate-700 mb-1 block">{f.label}</label>
-                  <input type={f.type} placeholder={f.placeholder}
+                  <input type={f.key === 'experience' ? 'text' : f.type} inputMode={f.key === 'experience' ? 'numeric' : undefined} placeholder={f.placeholder}
                     value={(newDoctor as Record<string, string>)[f.key]}
-                    onChange={e => setNewDoctor(prev => ({ ...prev, [f.key]: e.target.value }))}
+                    onChange={e => setNewDoctor(prev => ({
+                      ...prev,
+                      [f.key]: f.key === 'name' ? sanitizeName(e.target.value) :
+                        f.key === 'experience' ? sanitizeAge(e.target.value) :
+                        f.key === 'hospital' ? sanitizeAddress(e.target.value) :
+                        sanitizeText(e.target.value, 80),
+                    }))}
                     className="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
                 </div>
               ))}

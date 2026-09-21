@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { Bell, ShoppingCart, Menu, X, User, LogOut, ChevronDown, Video, Calendar, FlaskConical, Pill, BarChart2 } from 'lucide-react';
 import { mockNotifications } from '@/data/mockData';
-import logo from '@/assets/logo.png';
+import Logo from '@/components/ui/Logo';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -14,6 +14,16 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 30);
+    };
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const unreadCount = mockNotifications.filter(n => !n.read).length;
 
@@ -41,15 +51,16 @@ export default function Navbar() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      isScrolled
+        ? 'bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-md py-0'
+        : 'bg-white/80 backdrop-blur-sm border-b border-slate-100/60 shadow-none py-1'
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <img src={logo} alt="MediWave" className="w-8 h-8 rounded-lg object-contain bg-white" />
-            <span className="font-bold text-xl text-slate-800 font-sora">
-              Medi<span className="text-sky-600">Wave</span>
-            </span>
+            <Logo size={32} />
           </Link>
 
           {/* Desktop Nav */}
