@@ -1,6 +1,99 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  HeartPulse,
+  Brain,
+  Users,
+  Bone,
+  Sparkles,
+  Baby,
+  Smile,
+  Flame,
+  Activity,
+  Dna,
+  Eye,
+  Wind,
+  LucideIcon,
+} from 'lucide-react';
 import { specializations } from '@/data/doctors';
+
+const specialtyIconMap: Record<
+  string,
+  { icon: LucideIcon; color: string; bg: string; border: string }
+> = {
+  Cardiology: {
+    icon: HeartPulse,
+    color: 'text-red-500',
+    bg: 'bg-red-50',
+    border: 'border-red-100',
+  },
+  Neurology: {
+    icon: Brain,
+    color: 'text-purple-500',
+    bg: 'bg-purple-50',
+    border: 'border-purple-100',
+  },
+  Gynecology: {
+    icon: Users,
+    color: 'text-pink-500',
+    bg: 'bg-pink-50',
+    border: 'border-pink-100',
+  },
+  Orthopedics: {
+    icon: Bone,
+    color: 'text-blue-500',
+    bg: 'bg-blue-50',
+    border: 'border-blue-100',
+  },
+  Dermatology: {
+    icon: Sparkles,
+    color: 'text-amber-500',
+    bg: 'bg-amber-50',
+    border: 'border-amber-100',
+  },
+  Pediatrics: {
+    icon: Baby,
+    color: 'text-emerald-500',
+    bg: 'bg-emerald-50',
+    border: 'border-emerald-100',
+  },
+  Psychiatry: {
+    icon: Smile,
+    color: 'text-indigo-500',
+    bg: 'bg-indigo-50',
+    border: 'border-indigo-100',
+  },
+  Gastroenterology: {
+    icon: Flame,
+    color: 'text-teal-500',
+    bg: 'bg-teal-50',
+    border: 'border-teal-100',
+  },
+  Oncology: {
+    icon: Activity,
+    color: 'text-rose-500',
+    bg: 'bg-rose-50',
+    border: 'border-rose-100',
+  },
+  Endocrinology: {
+    icon: Dna,
+    color: 'text-cyan-500',
+    bg: 'bg-cyan-50',
+    border: 'border-cyan-100',
+  },
+  Ophthalmology: {
+    icon: Eye,
+    color: 'text-sky-500',
+    bg: 'bg-sky-50',
+    border: 'border-sky-100',
+  },
+  Pulmonology: {
+    icon: Wind,
+    color: 'text-slate-500',
+    bg: 'bg-slate-100',
+    border: 'border-slate-200',
+  },
+};
 
 export default function SpecialtyRing3D() {
   const ringRef = useRef<HTMLDivElement>(null);
@@ -11,8 +104,8 @@ export default function SpecialtyRing3D() {
   const lastXRef = useRef(0);
 
   const n = specializations.length;
-  // radius formula: 130 / tan(PI / n)
-  const radius = Math.round(150 / Math.tan(Math.PI / n));
+  // radius formula: 125 / tan(PI / n) ~ 466px
+  const radius = Math.round(125 / Math.tan(Math.PI / n));
 
   useEffect(() => {
     const ring = ringRef.current;
@@ -20,7 +113,7 @@ export default function SpecialtyRing3D() {
 
     let animId: number;
     const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const idleSpeed = 7; // deg per sec
+    const idleSpeed = 6; // deg per sec
 
     const update = (now: number) => {
       if (!lastTimeRef.current) lastTimeRef.current = now;
@@ -82,8 +175,8 @@ export default function SpecialtyRing3D() {
   }, [n]);
 
   return (
-    <section className="py-24 bg-[#f4f9ff] relative overflow-hidden select-none border-t border-[#d9e8f7]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-14 text-left">
+    <section className="pt-24 pb-32 bg-[#f4f9ff] relative overflow-hidden select-none border-t border-[#d9e8f7]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-16 text-left">
         <p className="text-[#0ea5e9] font-bold text-xs uppercase tracking-widest mb-2.5">
           BROWSE BY SPECIALITY
         </p>
@@ -95,14 +188,14 @@ export default function SpecialtyRing3D() {
         </p>
       </div>
 
-      {/* 3D Stage with perspective: 1250px and overflow: hidden */}
+      {/* 3D Stage with proper vertical clearance and perspective */}
       <div
-        className="w-full h-[320px] relative flex items-center justify-center overflow-hidden"
-        style={{ perspective: '1250px' }}
+        className="w-full h-[360px] relative flex items-center justify-center my-4 overflow-visible"
+        style={{ perspective: '1300px' }}
       >
         <div
           ref={ringRef}
-          className="relative w-[240px] h-[200px] touch-none cursor-grab"
+          className="relative w-[210px] h-[210px] touch-none cursor-grab"
           style={{
             transformStyle: 'preserve-3d',
             transition: isDraggingRef.current ? 'none' : 'transform 0.1s ease-out',
@@ -110,6 +203,14 @@ export default function SpecialtyRing3D() {
         >
           {specializations.map((spec, i) => {
             const angle = (360 / n) * i;
+            const iconConfig = specialtyIconMap[spec.name] || {
+              icon: HeartPulse,
+              color: 'text-sky-500',
+              bg: 'bg-sky-50',
+              border: 'border-sky-100',
+            };
+            const Icon = iconConfig.icon;
+
             return (
               <Link
                 key={spec.id}
@@ -119,16 +220,26 @@ export default function SpecialtyRing3D() {
                     e.preventDefault();
                   }
                 }}
-                className="absolute inset-0 rounded-3xl bg-white border border-[#d9e8f7] shadow-[0_10px_30px_-5px_rgba(12,33,54,0.06)] p-7 flex flex-col items-center justify-center hover:border-sky-400 hover:shadow-sky-200/50 transition-all text-center group"
+                className="absolute inset-0 rounded-3xl bg-white border border-[#d9e8f7] shadow-[0_10px_30px_-5px_rgba(12,33,54,0.08)] hover:shadow-[0_20px_40px_rgba(14,165,233,0.18)] p-5 flex flex-col items-center justify-center hover:border-sky-400 transition-all text-center group"
                 style={{
                   transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
                   backfaceVisibility: 'hidden',
                   WebkitBackfaceVisibility: 'hidden',
                 }}
               >
-                <h3 className="font-bold text-[#0c2136] text-xl font-sora mb-2 group-hover:text-[#0ea5e9] transition-colors">
+                {/* Floating Icon Badge with dynamic theme color */}
+                <div
+                  className={`w-13 h-13 p-3.5 ${iconConfig.bg} ${iconConfig.border} border rounded-2xl flex items-center justify-center ${iconConfig.color} group-hover:scale-110 transition-transform duration-300 shadow-sm mb-3.5`}
+                >
+                  <Icon size={24} strokeWidth={2} />
+                </div>
+
+                {/* Specialization Name */}
+                <h3 className="font-bold text-[#0c2136] text-lg font-sora mb-1 group-hover:text-[#0ea5e9] transition-colors leading-tight">
                   {spec.name}
                 </h3>
+
+                {/* Doctor Count */}
                 <p className="text-xs text-[#5b7392] font-medium">
                   {spec.count * 5 + 40} doctors
                 </p>
@@ -140,3 +251,4 @@ export default function SpecialtyRing3D() {
     </section>
   );
 }
+
