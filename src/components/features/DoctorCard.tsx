@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { LoginRequiredModal } from './Modal';
 
 import AvatarWithFallback from '@/components/ui/AvatarWithFallback';
+import TiltCard3D from '@/components/ui/TiltCard3D';
 
 interface DoctorCardProps {
   doctor: Doctor;
@@ -28,8 +29,10 @@ export default function DoctorCard({ doctor, onBook }: DoctorCardProps) {
 
   return (
     <>
-      <div
-        className="medical-card p-5 cursor-pointer group"
+      <TiltCard3D
+        className="medical-card p-6 cursor-pointer rounded-3xl"
+        maxTilt={8}
+        translateZ={10}
         onClick={() => navigate(`/doctors/${doctor.id}`)}
       >
         <div className="flex gap-4">
@@ -117,7 +120,7 @@ export default function DoctorCard({ doctor, onBook }: DoctorCardProps) {
             </button>
           </div>
         </div>
-      </div>
+      </TiltCard3D>
 
       <LoginRequiredModal
         isOpen={showLoginModal}

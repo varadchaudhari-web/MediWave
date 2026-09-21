@@ -22,6 +22,7 @@ import ServicesTiltGrid from '@/components/3d/ServicesTiltGrid';
 import SpecialtyRing3D from '@/components/3d/SpecialtyRing3D';
 import HowItWorksSteps from '@/components/3d/HowItWorksSteps';
 import AvatarWithFallback from '@/components/ui/AvatarWithFallback';
+import TiltCard3D from '@/components/ui/TiltCard3D';
 
 export default function Index() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -214,40 +215,44 @@ export default function Index() {
                 className="space-y-4 will-change-transform"
                 style={{ transformStyle: 'preserve-3d' }}
               >
-                {/* Live ECG Waveform Card */}
-                <div className="bg-white rounded-3xl p-6 border border-[#d9e8f7] shadow-[0_10px_30px_-5px_rgba(14,165,233,0.08)]">
+                {/* Live ECG Waveform Card with 3D Tilt */}
+                <TiltCard3D
+                  className="bg-white rounded-3xl p-6 border border-[#d9e8f7] shadow-[0_10px_30px_-5px_rgba(14,165,233,0.08)]"
+                  maxTilt={6}
+                  translateZ={8}
+                >
                   <LiveECG height={74} />
-                </div>
+                </TiltCard3D>
 
-                {/* 2x2 Fast Stat Counters */}
+                {/* 2x2 Fast Stat Counters with 3D Tilt & Glow */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white rounded-2xl p-5 border border-[#d9e8f7] text-left shadow-[0_10px_30px_-5px_rgba(14,165,233,0.06)]">
+                  <TiltCard3D className="bg-white rounded-2xl p-5 border border-[#d9e8f7] text-left shadow-[0_10px_30px_-5px_rgba(14,165,233,0.06)]" maxTilt={8} translateZ={10}>
                     <p className="text-3xl font-extrabold text-[#0369a1] font-sora">
                       <StatCounter finalValue={2.0} suffix="M+" decimals={1} />
                     </p>
                     <p className="text-[#5b7392] text-xs font-medium mt-1">Patients Served</p>
-                  </div>
+                  </TiltCard3D>
 
-                  <div className="bg-white rounded-2xl p-5 border border-[#d9e8f7] text-left shadow-[0_10px_30px_-5px_rgba(14,165,233,0.06)]">
+                  <TiltCard3D className="bg-white rounded-2xl p-5 border border-[#d9e8f7] text-left shadow-[0_10px_30px_-5px_rgba(14,165,233,0.06)]" maxTilt={8} translateZ={10}>
                     <p className="text-3xl font-extrabold text-[#0369a1] font-sora">
                       <StatCounter finalValue={15} suffix="K+" />
                     </p>
                     <p className="text-[#5b7392] text-xs font-medium mt-1">Verified Doctors</p>
-                  </div>
+                  </TiltCard3D>
 
-                  <div className="bg-white rounded-2xl p-5 border border-[#d9e8f7] text-left shadow-[0_10px_30px_-5px_rgba(14,165,233,0.06)]">
+                  <TiltCard3D className="bg-white rounded-2xl p-5 border border-[#d9e8f7] text-left shadow-[0_10px_30px_-5px_rgba(14,165,233,0.06)]" maxTilt={8} translateZ={10}>
                     <p className="text-3xl font-extrabold text-[#0369a1] font-sora">
                       <StatCounter finalValue={2000} suffix="+" formatNumber={true} />
                     </p>
                     <p className="text-[#5b7392] text-xs font-medium mt-1">Partner Hospitals</p>
-                  </div>
+                  </TiltCard3D>
 
-                  <div className="bg-white rounded-2xl p-5 border border-[#d9e8f7] text-left shadow-[0_10px_30px_-5px_rgba(14,165,233,0.06)]">
+                  <TiltCard3D className="bg-white rounded-2xl p-5 border border-[#d9e8f7] text-left shadow-[0_10px_30px_-5px_rgba(14,165,233,0.06)]" maxTilt={8} translateZ={10}>
                     <p className="text-3xl font-extrabold text-[#0369a1] font-sora">
                       <StatCounter finalValue={98} suffix="%" />
                     </p>
                     <p className="text-[#5b7392] text-xs font-medium mt-1">Satisfaction Rate</p>
-                  </div>
+                  </TiltCard3D>
                 </div>
               </div>
             </div>
@@ -255,7 +260,7 @@ export default function Index() {
         </div>
 
         {/* Center Pill over DNA wave */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center">
           <div className="px-4 py-1.5 bg-white/90 backdrop-blur-md border border-[#d9e8f7] rounded-full text-[#5b7392] text-xs font-mono tracking-widest uppercase shadow-sm">
             SCROLL • MOVE YOUR CURSOR
           </div>
@@ -271,7 +276,7 @@ export default function Index() {
       {/* SECTION 4: 3D Scroll-Driven How It Works Steps */}
       <HowItWorksSteps />
 
-      {/* SECTION 5: Featured Doctors */}
+      {/* SECTION 5: Featured Doctors (Each doctor card with 3D tilt & glow) */}
       <section className="py-24 bg-white border-t border-[#d9e8f7]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-end justify-between mb-12">
@@ -296,7 +301,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* SECTION 6: Health Packages */}
+      {/* SECTION 6: Health Packages (3D Tilt & Glow) */}
       <section className="py-24 bg-[#f4f9ff] border-t border-[#d9e8f7]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-left mb-12">
@@ -310,11 +315,13 @@ export default function Index() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {healthPackages.map(pkg => (
-              <div
+              <TiltCard3D
                 key={pkg.id}
                 className={`bg-white rounded-3xl p-6 border transition-all duration-300 relative shadow-sm hover:shadow-xl ${
                   pkg.popular ? 'border-[#0ea5e9] ring-2 ring-sky-500/20' : 'border-[#d9e8f7]'
                 }`}
+                maxTilt={9}
+                translateZ={12}
               >
                 {pkg.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-[#0ea5e9] text-white text-[11px] font-bold uppercase tracking-wider rounded-full shadow-md">
@@ -350,13 +357,13 @@ export default function Index() {
                 >
                   Book Package
                 </button>
-              </div>
+              </TiltCard3D>
             ))}
           </div>
         </div>
       </section>
 
-      {/* SECTION 7: Patient Testimonials */}
+      {/* SECTION 7: Patient Testimonials (3D Tilt & Glow) */}
       <section className="py-24 bg-white border-t border-[#d9e8f7]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-left mb-12">
@@ -370,7 +377,12 @@ export default function Index() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {testimonials.map(t => (
-              <div key={t.id} className="bg-white rounded-3xl p-6 border border-[#d9e8f7] shadow-sm hover:shadow-md transition-shadow">
+              <TiltCard3D
+                key={t.id}
+                className="bg-white rounded-3xl p-6 border border-[#d9e8f7] shadow-sm hover:shadow-xl transition-shadow"
+                maxTilt={8}
+                translateZ={10}
+              >
                 <div className="flex items-start gap-3.5 mb-4">
                   <AvatarWithFallback
                     src={t.avatar}
@@ -391,7 +403,7 @@ export default function Index() {
                 </div>
                 <p className="text-slate-600 text-sm leading-relaxed italic">"{t.comment}"</p>
                 <p className="text-[#5b7392] text-xs mt-4 font-mono">{t.date}</p>
-              </div>
+              </TiltCard3D>
             ))}
           </div>
         </div>
@@ -442,11 +454,17 @@ export default function Index() {
                 { icon: <Activity size={22} />, title: 'Live GPS Tracking', desc: 'Real-time location sharing link' },
                 { icon: <Shield size={22} />, title: '24/7 Helpline', desc: 'Zero wait time emergency call' },
               ].map(f => (
-                <div key={f.title} className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5">
+                <TiltCard3D
+                  key={f.title}
+                  className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5"
+                  maxTilt={8}
+                  translateZ={10}
+                  glowColor="rgba(255, 255, 255, 0.15)"
+                >
                   <div className="text-white mb-2">{f.icon}</div>
                   <h4 className="text-white font-bold text-sm font-sora">{f.title}</h4>
                   <p className="text-red-100 text-xs mt-1 leading-relaxed">{f.desc}</p>
-                </div>
+                </TiltCard3D>
               ))}
             </div>
           </div>

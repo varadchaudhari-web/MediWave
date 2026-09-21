@@ -8,6 +8,7 @@ import { LabTest } from '@/types';
 import { toast } from 'sonner';
 import { useAppData } from '@/contexts/AppDataContext';
 import { isValidCity, isValidEmail, isValidMobile, isValidPincode, sanitizeAddress, sanitizeCity, sanitizeEmail, sanitizeMobile, sanitizePincode, sanitizeSearch } from '@/lib/validation';
+import TiltCard3D from '@/components/ui/TiltCard3D';
 
 export default function Labs() {
   const { isAuthenticated, user } = useAuth();
@@ -158,7 +159,13 @@ export default function Labs() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
               {filtered.map(test => (
-                <div key={test.id} className="medical-card p-5 cursor-pointer group" onClick={() => setSelectedTest(test)}>
+                <TiltCard3D
+                  key={test.id}
+                  className="medical-card p-5 cursor-pointer rounded-2xl"
+                  maxTilt={8}
+                  translateZ={10}
+                  onClick={() => setSelectedTest(test)}
+                >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1 min-w-0 pr-3">
                       <h3 className="font-semibold text-slate-800 text-sm leading-snug group-hover:text-sky-600 transition-colors">{test.name}</h3>
@@ -179,19 +186,24 @@ export default function Labs() {
                     <div className="flex items-center gap-1"><FlaskConical size={11} className="text-purple-500" />{test.sampleType}</div>
                   </div>
                   <button onClick={e => { e.stopPropagation(); handleBook(test); }}
-                    className="w-full py-2 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition-colors">
+                    className="w-full py-2 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition-colors shadow-sm">
                     Book Test
                   </button>
-                </div>
+                </TiltCard3D>
               ))}
             </div>
           </>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {healthPackages.map(pkg => (
-              <div key={pkg.id} className={`medical-card p-6 relative ${pkg.popular ? 'ring-2 ring-sky-500' : ''}`}>
+              <TiltCard3D
+                key={pkg.id}
+                className={`medical-card p-6 relative rounded-3xl ${pkg.popular ? 'ring-2 ring-sky-500' : ''}`}
+                maxTilt={8}
+                translateZ={10}
+              >
                 {pkg.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-sky-600 text-white text-xs font-semibold rounded-full">Most Popular</div>
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-sky-600 text-white text-xs font-semibold rounded-full shadow-md">Most Popular</div>
                 )}
                 <FlaskConical size={24} className="text-sky-600 mb-3" />
                 <h3 className="font-bold text-slate-800 mb-1">{pkg.name}</h3>
@@ -217,10 +229,10 @@ export default function Labs() {
                 )}
                 <button
                   onClick={() => { if (!isAuthenticated) setLoginModal(true); else toast.success('Package booking initiated! Our team will call you shortly.'); }}
-                  className="w-full py-2.5 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition-colors">
+                  className="w-full py-2.5 bg-sky-600 text-white rounded-xl text-xs font-semibold hover:bg-sky-700 transition-colors shadow-sm">
                   Book Package
                 </button>
-              </div>
+              </TiltCard3D>
             ))}
           </div>
         )}
