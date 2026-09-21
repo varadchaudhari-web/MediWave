@@ -35,15 +35,17 @@ export async function initHeroHelix(
   renderer.setSize(width, height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
-  // 2. Lighting
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+  // 2. Lighting & Atmospheric Fog for realistic depth fade
+  scene.fog = new THREE.Fog(0xf4f9ff, 9, 16.5);
+
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
   scene.add(ambientLight);
 
-  const whiteDirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+  const whiteDirLight = new THREE.DirectionalLight(0xffffff, 1.6);
   whiteDirLight.position.set(4, 6, 8);
   scene.add(whiteDirLight);
 
-  const mintRimLight = new THREE.DirectionalLight(0x22c9a8, 0.7);
+  const mintRimLight = new THREE.DirectionalLight(0x22c9a8, 0.85);
   mintRimLight.position.set(-6, -3, 4);
   scene.add(mintRimLight);
 
@@ -68,20 +70,20 @@ export async function initHeroHelix(
 
   const matStrand1 = new THREE.MeshStandardMaterial({
     color: 0x0ea5e9, // --blue
-    roughness: 0.28,
-    metalness: 0.12,
+    roughness: 0.24,
+    metalness: 0.15,
   });
 
   const matStrand2 = new THREE.MeshStandardMaterial({
     color: 0x22c9a8, // --mint
-    roughness: 0.28,
-    metalness: 0.12,
+    roughness: 0.24,
+    metalness: 0.15,
   });
 
   const meshStrand1 = new THREE.Mesh(tubeGeo1, matStrand1);
   const meshStrand2 = new THREE.Mesh(tubeGeo2, matStrand2);
 
-  // 4. Nested groups: outer group rotates PI/2 to make wave horizontal at bottom; inner group spins on Y
+  // 4. Nested groups: outer group rotates to make wave horizontal at bottom; inner group spins on Y
   const outerGroup = new THREE.Group();
   const innerGroup = new THREE.Group();
 
@@ -104,14 +106,14 @@ export async function initHeroHelix(
   // 6. Spherical nodes on each strand at rung positions
   const nodeGeo = new THREE.SphereGeometry(0.13, 16, 16);
   const nodeMat1 = new THREE.MeshStandardMaterial({
-    color: 0x38bdf8,
+    color: 0x0ea5e9,
     roughness: 0.2,
-    metalness: 0.3,
+    metalness: 0.25,
   });
   const nodeMat2 = new THREE.MeshStandardMaterial({
-    color: 0x2dd4bf,
+    color: 0x22c9a8,
     roughness: 0.2,
-    metalness: 0.3,
+    metalness: 0.25,
   });
 
   interface NodeData {
@@ -181,17 +183,17 @@ export async function initHeroHelix(
     color: 0x38bdf8,
     size: 0.07,
     transparent: true,
-    opacity: 0.55,
+    opacity: 0.45,
     blending: THREE.AdditiveBlending,
   });
 
   const motes = new THREE.Points(motesGeo, motesMat);
   scene.add(motes);
 
-  // 8. Outer group orientation
+  // 8. Outer group orientation: slightly tilted in perspective with right side receding in depth
   outerGroup.add(innerGroup);
-  outerGroup.rotation.z = Math.PI / 2; // Horizontal layout
-  outerGroup.position.set(0, -4.6, -1); // Near bottom of hero reading as a wave
+  outerGroup.rotation.set(0.18, -0.16, Math.PI / 2 * 0.98); // Slight 3D diagonal wave tilt
+  outerGroup.position.set(0.4, -5.7, -1.2); // Positioned lower below buttons
   scene.add(outerGroup);
 
   // 9. Responsive adjustments
@@ -204,11 +206,11 @@ export async function initHeroHelix(
 
     if (curW < 960) {
       outerGroup.scale.setScalar(0.62);
-      outerGroup.position.set(0, -3.8, -1.2);
+      outerGroup.position.set(0, -4.6, -1.2);
       motes.visible = false;
     } else {
-      outerGroup.scale.setScalar(1.0);
-      outerGroup.position.set(0, -4.6, -1.0);
+      outerGroup.scale.setScalar(1.02);
+      outerGroup.position.set(0.4, -5.7, -1.2);
       motes.visible = true;
     }
   };

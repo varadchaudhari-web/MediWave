@@ -108,7 +108,7 @@ export default function Index() {
       {/* SECTION 1: Light Theme Hero matching Screenshot 1 */}
       <section
         ref={heroRef}
-        className="relative min-h-[92vh] flex items-center overflow-hidden hero-light-bg pt-28 pb-16"
+        className="relative min-h-[96vh] flex items-center overflow-hidden hero-light-bg pt-24 pb-32"
         style={{ zIndex: 1 }}
       >
         {/* Subtle light ambient glow circles */}
