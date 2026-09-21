@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import {
   HeartPulse,
   Brain,
@@ -212,15 +211,9 @@ export default function SpecialtyRing3D() {
             const Icon = iconConfig.icon;
 
             return (
-              <Link
+              <div
                 key={spec.id}
-                to={`/doctors?specialty=${encodeURIComponent(spec.name)}`}
-                onClick={e => {
-                  if (Math.abs(velocityRef.current) > 25) {
-                    e.preventDefault();
-                  }
-                }}
-                className="absolute inset-0 rounded-3xl bg-white border border-[#d9e8f7] shadow-[0_10px_30px_-5px_rgba(12,33,54,0.08)] hover:shadow-[0_20px_40px_rgba(14,165,233,0.18)] p-5 flex flex-col items-center justify-center hover:border-sky-400 transition-all text-center group"
+                className="absolute inset-0 rounded-3xl bg-white border border-[#d9e8f7] shadow-[0_10px_30px_-5px_rgba(12,33,54,0.08)] hover:shadow-[0_20px_40px_rgba(14,165,233,0.18)] p-5 flex flex-col items-center justify-center hover:border-sky-300 transition-all text-center select-none group"
                 style={{
                   transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
                   backfaceVisibility: 'hidden',
@@ -235,7 +228,7 @@ export default function SpecialtyRing3D() {
                 </div>
 
                 {/* Specialization Name */}
-                <h3 className="font-bold text-[#0c2136] text-lg font-sora mb-1 group-hover:text-[#0ea5e9] transition-colors leading-tight">
+                <h3 className="font-bold text-[#0c2136] text-lg font-sora mb-1 leading-tight">
                   {spec.name}
                 </h3>
 
@@ -243,7 +236,7 @@ export default function SpecialtyRing3D() {
                 <p className="text-xs text-[#5b7392] font-medium">
                   {spec.count * 5 + 40} doctors
                 </p>
-              </Link>
+              </div>
             );
           })}
         </div>
