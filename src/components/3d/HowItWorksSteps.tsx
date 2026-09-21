@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, CalendarCheck, Video, HeartPulse } from 'lucide-react';
 import { easeOutCubic } from '@/components/features/StatCounter';
 
@@ -8,6 +9,7 @@ interface StepData {
   desc: string;
   icon: React.ElementType;
   badge: string;
+  href: string;
 }
 
 const steps: StepData[] = [
@@ -17,6 +19,7 @@ const steps: StepData[] = [
     desc: 'Search 15,000+ verified doctors by symptom, specialty, language, or hospital.',
     icon: Search,
     badge: 'Smart Discovery',
+    href: '/doctors',
   },
   {
     number: '02',
@@ -24,6 +27,7 @@ const steps: StepData[] = [
     desc: 'Choose a convenient time slot for video consultation or in-person clinic visit.',
     icon: CalendarCheck,
     badge: 'Real-time Slots',
+    href: '/appointments',
   },
   {
     number: '03',
@@ -31,6 +35,7 @@ const steps: StepData[] = [
     desc: 'Join encrypted HD video consultation and discuss diagnosis with digital prescription.',
     icon: Video,
     badge: '100% Secure',
+    href: '/telemedicine',
   },
   {
     number: '04',
@@ -38,12 +43,13 @@ const steps: StepData[] = [
     desc: 'Get medicines delivered in 24 hours and track continuous health vitals.',
     icon: HeartPulse,
     badge: 'Complete Care',
+    href: '/medicines',
   },
 ];
 
 export default function HowItWorksSteps() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cardRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -126,10 +132,11 @@ export default function HowItWorksSteps() {
           {steps.map((step, idx) => {
             const Icon = step.icon;
             return (
-              <div
+              <Link
                 key={step.number}
                 ref={el => (cardRefs.current[idx] = el)}
-                className="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-sky-300 transition-all duration-300 flex flex-col justify-between relative group"
+                to={step.href}
+                className="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-sky-300 transition-all duration-300 flex flex-col justify-between relative group cursor-pointer block text-left"
                 style={{
                   transformStyle: 'preserve-3d',
                   willChange: 'transform, opacity',
@@ -149,14 +156,16 @@ export default function HowItWorksSteps() {
                     <Icon size={26} strokeWidth={2} />
                   </div>
 
-                  <h3 className="font-bold text-slate-800 text-lg font-sora mb-2">{step.title}</h3>
+                  <h3 className="font-bold text-slate-800 text-lg font-sora mb-2 group-hover:text-sky-600 transition-colors">
+                    {step.title}
+                  </h3>
                   <p className="text-slate-500 text-sm leading-relaxed">{step.desc}</p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-sky-600 group-hover:translate-x-1 transition-transform">
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-sky-600 group-hover:text-sky-700 group-hover:translate-x-1.5 transition-all">
                   Learn more →
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
@@ -164,3 +173,4 @@ export default function HowItWorksSteps() {
     </section>
   );
 }
+
